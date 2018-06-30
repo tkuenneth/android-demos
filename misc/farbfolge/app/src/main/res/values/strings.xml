@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Farbfolge</string>
+    <string name="start">Start</string>
+    <string name="gewonnen">G E W O N N E N !!!</string>
+    <string name="verloren">Leider verloren</string>
+    <string name="muster">Rekord: %1$d Sekunden</string>
+    <string name="willkommen">Willkommen zu Farbfolge</string>
+</resources>

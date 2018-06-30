@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">NotificationChannelDemo</string>
+    <string name="new_notification">Neue Benachrichtigung</string>
+    <string name="settings">Einstellungen</string>
+    <string name="channelName">Kanalname</string>
+    <string name="channelDescr">Kanalbeschreibung</string>
+    <string name="contentTitle">Neue Nachricht</string>
+    <string name="contentText">Das ist eine neue Nachricht</string>
+</resources>

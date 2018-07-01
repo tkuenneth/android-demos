@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SharedMemoryDemo</string>
+    <string name="hint">Bitte einen Text eingeben</string>
+    <string name="submit">Und los</string>
+</resources>

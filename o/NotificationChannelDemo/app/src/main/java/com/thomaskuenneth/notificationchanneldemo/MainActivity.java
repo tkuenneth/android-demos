@@ -16,31 +16,37 @@ public class MainActivity extends Activity {
 
     private static int notificationId = 0;
 
+    private static int count = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final NotificationManager nm =
-                getSystemService(NotificationManager.class);
         NotificationChannel channel =
                 new NotificationChannel(CHANNEL_ID,
                         getString(R.string.channelName),
                         NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription(getString(R.string.channelDescr));
-        nm.createNotificationChannel(channel);
-        Button newNotification = findViewById(R.id.new_notification);
-        newNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Notification notification = new Notification.Builder(MainActivity.this,
-                        CHANNEL_ID)
-                        .setContentTitle(getString(R.string.contentTitle))
-                        .setContentText(getString(R.string.contentText))
-                        .setSmallIcon(R.drawable.ic_mail_black_24dp)
-                        .build();
-                nm.notify(notificationId++, notification);
-            }
-        });
+        channel.setShowBadge(true);
+        final NotificationManager nm =
+                getSystemService(NotificationManager.class);
+        if (nm != null) {
+            nm.createNotificationChannel(channel);
+            Button newNotification = findViewById(R.id.new_notification);
+            newNotification.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Notification notification = new Notification.Builder(MainActivity.this,
+                            CHANNEL_ID)
+                            .setContentTitle(getString(R.string.contentTitle))
+                            .setContentText(getString(R.string.contentText, ++count))
+                            .setSmallIcon(R.drawable.ic_mail_black_24dp)
+                            .setNumber(count)
+                            .build();
+                    nm.notify(notificationId, notification);
+                }
+            });
+        }
 
         Button b = findViewById(R.id.settings);
         b.setOnClickListener(new View.OnClickListener() {

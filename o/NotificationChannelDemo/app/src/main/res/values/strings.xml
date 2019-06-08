@@ -5,5 +5,5 @@
     <string name="channelName">Kanalname</string>
     <string name="channelDescr">Kanalbeschreibung</string>
     <string name="contentTitle">Neue Nachricht</string>
-    <string name="contentText">Das ist eine neue Nachricht</string>
+    <string name="contentText">Sie haben %1$d neue Nachrichten</string>
 </resources>

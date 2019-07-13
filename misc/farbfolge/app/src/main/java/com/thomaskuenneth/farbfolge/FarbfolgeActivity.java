@@ -1,5 +1,6 @@
 package com.thomaskuenneth.farbfolge;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -45,34 +46,30 @@ class FarbfolgeActivity extends Activity implements View.OnTouchListener {
 
     long zuletztGestartet;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.farbfolge_layout);
 
-        rekord = (TextView) findViewById(R.id.rekord);
+        rekord = findViewById(R.id.rekord);
 
-        start = (Button) findViewById(R.id.start);
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                spielStarten();
-            }
-        });
+        start = findViewById(R.id.start);
+        start.setOnClickListener(v -> spielStarten());
 
-        rot = (Button) findViewById(R.id.rot);
+        rot = findViewById(R.id.rot);
         rot.setTag(Farbe.ROT);
         rot.setOnTouchListener(this);
 
-        gelb = (Button) findViewById(R.id.gelb);
+        gelb = findViewById(R.id.gelb);
         gelb.setTag(Farbe.GELB);
         gelb.setOnTouchListener(this);
 
-        gruen = (Button) findViewById(R.id.gruen);
+        gruen = findViewById(R.id.gruen);
         gruen.setTag(Farbe.GRUEN);
         gruen.setOnTouchListener(this);
 
-        blau = (Button) findViewById(R.id.blau);
+        blau = findViewById(R.id.blau);
         blau.setTag(Farbe.BLAU);
         blau.setOnTouchListener(this);
 
@@ -88,11 +85,14 @@ class FarbfolgeActivity extends Activity implements View.OnTouchListener {
                 case MotionEvent.ACTION_DOWN:
                     setzeFarbe(button, true);
                     timerStoppen();
-                    break;
+                    return true;
                 case MotionEvent.ACTION_UP:
                     setzeFarbe(button, false);
                     rateFarbe(f);
-                    break;
+                    return true;
+                case MotionEvent.ACTION_BUTTON_PRESS:
+                    v.performClick();
+                    return true;
             }
         }
         return false;
@@ -135,24 +135,18 @@ class FarbfolgeActivity extends Activity implements View.OnTouchListener {
         if (index == 0) {
             status = Status.FARBFOLGE_ANZEIGEN;
         }
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setzeFarbe(zufaelligeFarben[index], true);
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setzeFarbe(zufaelligeFarben[index], false);
-                        final int idx = 1 + index;
-                        if (idx <= richtigGerateneFarben) {
-                            farbeAnzeigen(idx);
-                        } else {
-                            status = Status.EINGABE_ABWARTEN;
-                            timerStarten();
-                        }
-                    }
-                }, DAUER_HELL);
-            }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            setzeFarbe(zufaelligeFarben[index], true);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                setzeFarbe(zufaelligeFarben[index], false);
+                final int idx = 1 + index;
+                if (idx <= richtigGerateneFarben) {
+                    farbeAnzeigen(idx);
+                } else {
+                    status = Status.EINGABE_ABWARTEN;
+                    timerStarten();
+                }
+            }, DAUER_HELL);
         }, VERZOEGERUNG_VOR_HELL);
     }
 
@@ -223,13 +217,7 @@ class FarbfolgeActivity extends Activity implements View.OnTouchListener {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        verloren();
-                    }
-                });
+                runOnUiThread(() -> verloren());
             }
         }, 3000L);
     }

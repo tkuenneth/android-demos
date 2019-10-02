@@ -1,0 +1,12 @@
+<resources>
+
+    <style
+        name="AppTheme"
+        parent="Theme.AppCompat.DayNight">
+
+        <item name="myOwnColorGood">?android:textColorPrimary</item>
+        <item name="myOwnColorBad">#ff000000</item>
+
+    </style>
+
+</resources>

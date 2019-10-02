@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DarkModeDemo</string>
+    <string name="right">Richtig</string>
+    <string name="wrong">Falsch</string>
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MagnifierDemo</string>
+    <string name="hint">Bitte Text eingeben</string>
+</resources>

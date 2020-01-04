@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FingerprintDialogDemo</string>
+    <string name="descr">I am a description.</string>
+    <string name="title">I am a title</string>
+    <string name="subtitle">I am a subtitle</string>
+    <string name="button">Click me</string>
+    <string name="ok">OK</string>
+    <string name="error">Error</string>
+    <string name="failed">Failed</string>
+</resources>

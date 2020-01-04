@@ -4,7 +4,7 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.mathema.magnifierdemo.MainActivity">
+    tools:context="de.mathema.magnifierdemo.MagnifierDemoActivity">
 
     <EditText
         android:id="@+id/editText"

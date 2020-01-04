@@ -13,7 +13,7 @@ import android.widget.Magnifier;
  *
  * @see <a href="https://developer.android.com/reference/android/widget/Magnifier.html" />
  */
-public class MainActivity extends Activity {
+public class MagnifierDemoActivity extends Activity {
 
     private Handler handler;
 

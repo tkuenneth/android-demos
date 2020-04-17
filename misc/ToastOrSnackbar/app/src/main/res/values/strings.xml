@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ToastOrSnackbar</string>
+
+    <string name="simple">Simple</string>
+    <string name="custom">Custom</string>
+    <string name="snackbar">Snackbar</string>
+    <string name="dismiss">Dismiss</string>
+
+</resources>

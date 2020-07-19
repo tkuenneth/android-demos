@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ActivityGroupDemo</string>
+    <string name="first">#1</string>
+    <string name="second">#2</string>
+</resources>

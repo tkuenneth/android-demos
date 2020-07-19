@@ -23,9 +23,9 @@ class MainActivity : AppCompatActivity() {
                 // DeviceState.POSTURE_UNKNOWN
                 else -> "UNKNOWN"
             }
-            textview.append("Posture: $posture")
+            textview.append("Posture: $posture\n")
             wm.windowLayoutInfo.displayFeatures.forEach {
-                textview.append(it.toString())
+                textview.append("$it.toString()\n")
             }
         }
     }

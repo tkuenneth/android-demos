@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PowerMenuDemo</string>
+    <string name="text">Bitte Ein-/Ausschalter drücken und halten</string>
+
+    <string name="title">iX Schalter</string>
+    <string name="subtitle">Raumname</string>
+    <string name="structure">Gebäudename</string>
+
+    <string name="config">Konfiguration</string>
+    <string name="on_off">Ein/Aus</string>
+
+</resources>

@@ -105,7 +105,7 @@ fun Triangle(color: Color,
                             moveTo(size.width / 2, 0f)
                             lineTo(size.width - 1, size.height - 1)
                             relativeLineTo(-size.width, 0f)
-                            lineTo(size.width / 2, 0f)
+                            // relativeLineTo(32f, -32f)
                         })
                         .background(color)
             }

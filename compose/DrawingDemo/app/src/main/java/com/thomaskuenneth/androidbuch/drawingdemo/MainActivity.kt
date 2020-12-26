@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -32,7 +33,8 @@ fun Content() {
     DrawingDemoTheme {
         Surface(color = MaterialTheme.colors.background) {
             //RowWithThreeRectangles()
-            RowWithThreeCircles()
+            //RowWithThreeCircles()
+            RowWithATriangle()
         }
     }
 }
@@ -61,6 +63,15 @@ fun RowWithThreeCircles() {
 }
 
 @Composable
+fun RowWithATriangle() {
+    Row(modifier = Modifier.fillMaxWidth()
+    ) {
+        Triangle(modifier = Modifier.fillMaxWidth(),
+                color = Color.Yellow)
+    }
+}
+
+@Composable
 fun Rectangle(color: Color,
               modifier: Modifier = Modifier) {
     Box(
@@ -79,6 +90,23 @@ fun Circle(color: Color,
             modifier = modifier.composed {
                 preferredSize(32.dp)
                         .clip(CircleShape)
+                        .background(color)
+            }
+    )
+}
+
+@Composable
+fun Triangle(color: Color,
+             modifier: Modifier = Modifier) {
+    Box(
+            modifier = modifier.composed {
+                preferredSize(64.dp)
+                        .clip(GenericShape { size ->
+                            moveTo(size.width / 2, 0f)
+                            lineTo(size.width - 1, size.height - 1)
+                            relativeLineTo(-size.width, 0f)
+                            lineTo(size.width / 2, 0f)
+                        })
                         .background(color)
             }
     )

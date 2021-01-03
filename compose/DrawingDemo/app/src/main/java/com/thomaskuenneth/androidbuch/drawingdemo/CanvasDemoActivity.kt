@@ -3,6 +3,7 @@ package com.thomaskuenneth.androidbuch.drawingdemo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.Surface
@@ -10,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradient
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,10 +53,29 @@ fun SimpleCanvas() {
         })
 }
 
+@Composable
+fun CanvasWithGradient() {
+    Canvas(modifier = Modifier.fillMaxWidth().preferredHeight(128.dp),
+        onDraw = {
+            val gradient = LinearGradient(
+                listOf(Color.Blue, Color.Black),
+                startX = size.width / 2 - 64, startY = size.height / 2 - 64,
+                endX = size.width / 2 + 64, endY = size.height / 2 + 64,
+                tileMode = TileMode.Clamp
+            )
+            drawCircle(
+                gradient, 64f,
+            )
+        })
+}
+
 @Preview
 @Composable
 fun CanvasContent() {
     Surface {
-        SimpleCanvas()
+        Column() {
+            SimpleCanvas()
+            CanvasWithGradient()
+        }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.LinearGradient
+import androidx.compose.ui.graphics.RadialGradient
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,6 +64,11 @@ fun CanvasWithGradient() {
                 endX = size.width / 2 + 64, endY = size.height / 2 + 64,
                 tileMode = TileMode.Clamp
             )
+//            val gradient = RadialGradient(
+//                listOf(Color.Black, Color.Blue),
+//                centerX = center.x, centerY = center.y,
+//                radius = 64f
+//            )
             drawCircle(
                 gradient, 64f,
             )

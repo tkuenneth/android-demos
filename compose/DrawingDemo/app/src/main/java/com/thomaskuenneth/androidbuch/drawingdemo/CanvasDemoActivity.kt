@@ -40,6 +40,13 @@ fun SimpleCanvas() {
                 Color.Red, 64f,
                 Offset(size.width / 2, size.height / 2)
             )
+//            drawCircle(
+//                Color.Red, 64f,
+//                Offset(size.width / 2, size.height / 2),
+//                style = Stroke(width = 8f,
+//                    pathEffect = DashPathEffect(floatArrayOf(10f, 10f), 0f)
+//                ),
+//            )
         })
 }
 

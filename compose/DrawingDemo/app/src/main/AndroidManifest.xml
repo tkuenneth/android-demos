@@ -9,15 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DrawingDemo">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.DrawingDemo.NoActionBar">
+        <activity android:name=".CanvasDemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShapesDemoActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.DrawingDemo.NoActionBar">
         </activity>
     </application>
 

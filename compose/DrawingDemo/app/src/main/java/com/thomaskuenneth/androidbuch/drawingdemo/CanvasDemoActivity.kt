@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.Surface
@@ -12,11 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.LinearGradient
-import androidx.compose.ui.graphics.RadialGradient
+import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlin.math.PI
+import kotlin.math.sin
 
 class CanvasDemoActivity : AppCompatActivity() {
 
@@ -75,13 +78,37 @@ fun CanvasWithGradient() {
         })
 }
 
+@Composable
+fun SinusPlotter() {
+    Canvas(modifier = Modifier.fillMaxSize(),
+        onDraw = {
+            val middleW = size.width / 2
+            val middleH = size.height / 2
+            drawLine(Color.Gray, Offset(0f, middleH), Offset(size.width - 1, middleH))
+            drawLine(Color.Gray, Offset(middleW, 0f), Offset(middleW, size.height - 1))
+            val points = mutableListOf<Offset>()
+            for (x in 0 until size.width.toInt()) {
+                val y = (sin(x * (2f * PI / size.width)) * middleH + middleH).toFloat()
+                points.add(Offset(x.toFloat(), y))
+            }
+            drawPoints(
+                points = points,
+                strokeWidth = 4f,
+                pointMode = PointMode.Points,
+                color = Color.Blue
+            )
+        }
+    )
+}
+
 @Preview
 @Composable
 fun CanvasContent() {
     Surface {
         Column() {
-            SimpleCanvas()
-            CanvasWithGradient()
+            //SimpleCanvas()
+            //CanvasWithGradient()
+            SinusPlotter()
         }
     }
 }

@@ -11,10 +11,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradient
-import androidx.compose.ui.graphics.PointMode
-import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,7 +83,25 @@ fun SinusPlotter() {
             val middleW = size.width / 2
             val middleH = size.height / 2
             drawLine(Color.Gray, Offset(0f, middleH), Offset(size.width - 1, middleH))
+            drawPath(
+                path = Path().apply {
+                    moveTo(middleW, 0f)
+                    relativeLineTo(-20f, 20f)
+                    relativeLineTo(40f, -0F)
+                    close()
+                },
+                Color.Gray,
+            )
             drawLine(Color.Gray, Offset(middleW, 0f), Offset(middleW, size.height - 1))
+            drawPath(
+                path = Path().apply {
+                    moveTo(size.width - 1, middleH)
+                    relativeLineTo(-20f, 20f)
+                    relativeLineTo(0f, -40F)
+                    close()
+                },
+                Color.Gray,
+            )
             val points = mutableListOf<Offset>()
             for (x in 0 until size.width.toInt()) {
                 val y = (sin(x * (2f * PI / size.width)) * middleH + middleH).toFloat()

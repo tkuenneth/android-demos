@@ -148,6 +148,8 @@ fun C64TextDemo() {
             paint.textSize = 64f
             paint.color = 0xffb0b3ff.toInt()
             paint.typeface = customTypeface
+            //paint.flags = Paint.UNDERLINE_TEXT_FLAG
+            //paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
             drawContext.canvas.nativeCanvas.drawText(
                 "HELLO WORLD!",
                 center.x, center.y, paint

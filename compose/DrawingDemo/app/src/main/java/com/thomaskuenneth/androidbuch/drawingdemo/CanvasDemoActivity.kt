@@ -1,6 +1,7 @@
 package com.thomaskuenneth.androidbuch.drawingdemo
 
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
@@ -14,18 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlin.math.PI
 import kotlin.math.sin
 
+private lateinit var customTypeface: Typeface
+
 class CanvasDemoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // See https://style64.org/c64-truetype
+            customTypeface = resources.getFont(R.font.c64_pro_mono_style)
             CanvasContent()
         }
     }
@@ -134,6 +138,23 @@ fun TextDemo() {
         })
 }
 
+@Composable
+fun C64TextDemo() {
+    Canvas(modifier = Modifier.fillMaxWidth().preferredHeight(128.dp),
+        onDraw = {
+            drawRect(Color(0xff525ce6))
+            val paint = Paint()
+            paint.textAlign = Paint.Align.CENTER
+            paint.textSize = 64f
+            paint.color = 0xffb0b3ff.toInt()
+            paint.typeface = customTypeface
+            drawContext.canvas.nativeCanvas.drawText(
+                "HELLO WORLD!",
+                center.x, center.y, paint
+            )
+        })
+}
+
 @Preview
 @Composable
 fun CanvasContent() {
@@ -142,7 +163,7 @@ fun CanvasContent() {
             //SimpleCanvas()
             //CanvasWithGradient()
             //SinusPlotter()
-            TextDemo()
+            C64TextDemo()
         }
     }
 }

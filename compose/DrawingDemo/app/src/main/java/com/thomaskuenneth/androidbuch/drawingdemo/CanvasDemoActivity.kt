@@ -1,5 +1,6 @@
 package com.thomaskuenneth.androidbuch.drawingdemo
 
+import android.graphics.Paint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.tooling.preview.Preview
@@ -117,6 +119,21 @@ fun SinusPlotter() {
     )
 }
 
+@Composable
+fun TextDemo() {
+    Canvas(modifier = Modifier.fillMaxWidth().preferredHeight(128.dp),
+        onDraw = {
+            val paint = android.graphics.Paint()
+            paint.textAlign = Paint.Align.CENTER
+            paint.textSize = 64f
+            paint.color = 0xffff0000.toInt()
+            drawIntoCanvas {
+                it.nativeCanvas.drawText("Hello", center.x, center.y, paint)
+            }
+//            drawContext.canvas.nativeCanvas.drawText("Hello", center.x, center.y, paint)
+        })
+}
+
 @Preview
 @Composable
 fun CanvasContent() {
@@ -124,7 +141,8 @@ fun CanvasContent() {
         Column() {
             //SimpleCanvas()
             //CanvasWithGradient()
-            SinusPlotter()
+            //SinusPlotter()
+            TextDemo()
         }
     }
 }

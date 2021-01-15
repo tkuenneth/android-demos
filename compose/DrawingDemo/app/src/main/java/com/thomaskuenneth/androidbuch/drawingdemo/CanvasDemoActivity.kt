@@ -5,7 +5,10 @@ import android.graphics.Typeface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -190,10 +193,10 @@ fun Modifier.drawRedCross() = this.drawWithContent {
 fun CanvasContent() {
     Surface {
         Column() {
-//            Text(
-//                modifier = Modifier.drawOnYellow(),
-//                text = "Hello Compose"
-//            )
+            Text(
+                modifier = Modifier.drawOnYellow(),
+                text = "Hello Compose"
+            )
             Text(
                 modifier = Modifier.drawRedCross(),
                 text = "Imperative"

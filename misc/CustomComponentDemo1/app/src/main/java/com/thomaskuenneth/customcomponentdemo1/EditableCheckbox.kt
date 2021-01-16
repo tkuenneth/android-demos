@@ -8,9 +8,8 @@ import android.widget.RelativeLayout
 
 class EditableCheckbox @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : RelativeLayout(context, attrs, defStyleAttr) {
+    attrs: AttributeSet? = null
+) : RelativeLayout(context, attrs) {
 
     private val checkBox = CheckBox(context)
     private val resIdCheckBox = ResId@ 1

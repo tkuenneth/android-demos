@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,13 +56,14 @@ fun SimpleCanvas() {
                 Color.Red, 64f,
                 Offset(size.width / 2, size.height / 2)
             )
-//            drawCircle(
-//                Color.Red, 64f,
-//                Offset(size.width / 2, size.height / 2),
-//                style = Stroke(width = 8f,
-//                    pathEffect = DashPathEffect(floatArrayOf(10f, 10f), 0f)
-//                ),
-//            )
+            drawCircle(
+                Color.Blue, 64f,
+                Offset(size.width / 2, size.height / 2),
+                style = Stroke(
+                    width = 8f,
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                ),
+            )
         })
 }
 
@@ -72,19 +73,14 @@ fun CanvasWithGradient() {
         .fillMaxWidth()
         .preferredHeight(128.dp),
         onDraw = {
-            val gradient = LinearGradient(
-                listOf(Color.Blue, Color.Black),
-                startX = size.width / 2 - 64, startY = size.height / 2 - 64,
-                endX = size.width / 2 + 64, endY = size.height / 2 + 64,
+            val gradient = Brush.linearGradient(
+                colors = listOf(Color.Blue, Color.Black),
+                start = Offset(size.width / 2 - 64, size.height / 2 - 64),
+                end = Offset(size.width / 2 + 64, size.height / 2 + 64),
                 tileMode = TileMode.Clamp
             )
-//            val gradient = RadialGradient(
-//                listOf(Color.Black, Color.Blue),
-//                centerX = center.x, centerY = center.y,
-//                radius = 64f
-//            )
             drawCircle(
-                gradient, 64f,
+                brush = gradient, radius = 64f
             )
         })
 }
@@ -193,16 +189,16 @@ fun Modifier.drawRedCross() = this.drawWithContent {
 fun CanvasContent() {
     Surface {
         Column() {
-            Text(
-                modifier = Modifier.drawOnYellow(),
-                text = "Hello Compose"
-            )
-            Text(
-                modifier = Modifier.drawRedCross(),
-                text = "Imperative"
-            )
-            //SimpleCanvas()
-            //CanvasWithGradient()
+//            Text(
+//                modifier = Modifier.drawOnYellow(),
+//                text = "Hello Compose"
+//            )
+//            Text(
+//                modifier = Modifier.drawRedCross(),
+//                text = "Imperative"
+//            )
+            SimpleCanvas()
+            CanvasWithGradient()
             //SinusPlotter()
             //C64TextDemo()
         }

@@ -52,8 +52,3 @@ fun Content() {
         }
     }
 }
-
-private fun getHello() = URL("http://10.0.2.2:8080/hello")
-    .openStream()
-    .bufferedReader()
-    .use { it.readText() }

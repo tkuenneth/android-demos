@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.thomaskuenneth.threadingdemo.databinding.ActivityDontDoItLikeThisBinding
 import java.net.URL
+import kotlin.concurrent.thread
 
 class DontDoItLikeThis : AppCompatActivity() {
 
@@ -15,7 +16,10 @@ class DontDoItLikeThis : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.button.setOnClickListener {
-            binding.textView.text = getHello()
+            thread {
+                val msg = getHello()
+                binding.textView.text = msg
+            }
         }
     }
 }

@@ -33,7 +33,6 @@ class ComposeThreading : AppCompatActivity() {
 @Preview
 fun Content() {
     val txt1 = stringResource(id = R.string.not_clicked)
-    val txt2 = stringResource(id = R.string.greeting)
     val msg = remember { mutableStateOf(txt1) }
     ThreadingDemoTheme {
         Surface(color = MaterialTheme.colors.background) {

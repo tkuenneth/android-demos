@@ -33,6 +33,7 @@ class ComposeThreading : AppCompatActivity() {
 @Preview
 fun Content() {
     val txt1 = stringResource(id = R.string.not_clicked)
+    val txt2 = stringResource(id = R.string.greeting)
     val msg = remember { mutableStateOf(txt1) }
     ThreadingDemoTheme {
         Surface(color = MaterialTheme.colors.background) {
@@ -42,7 +43,7 @@ fun Content() {
                 verticalArrangement = Arrangement.Center
             ) {
                 Button(onClick = {
-                    msg.value = getHello()
+                    msg.value = txt2
                 }) {
                     Text(text = stringResource(id = R.string.click))
                 }
@@ -51,8 +52,3 @@ fun Content() {
         }
     }
 }
-
-private fun getHello() = URL("http://10.0.2.2:8080/hello")
-    .openStream()
-    .bufferedReader()
-    .use { it.readText() }

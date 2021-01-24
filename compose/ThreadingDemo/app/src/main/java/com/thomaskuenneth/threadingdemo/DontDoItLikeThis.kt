@@ -3,6 +3,7 @@ package com.thomaskuenneth.threadingdemo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.thomaskuenneth.threadingdemo.databinding.ActivityDontDoItLikeThisBinding
+import java.net.URL
 
 class DontDoItLikeThis : AppCompatActivity() {
 
@@ -14,7 +15,12 @@ class DontDoItLikeThis : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.button.setOnClickListener {
-            binding.textView.text = getString(R.string.greeting)
+            binding.textView.text = getHello()
         }
     }
 }
+
+private fun getHello() = URL("http://10.0.2.2:8080/hello")
+    .openStream()
+    .bufferedReader()
+    .use { it.readText() }

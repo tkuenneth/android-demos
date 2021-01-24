@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ThreadingDemo</string>
+    <string name="click">Click me</string>
+    <string name="not_clicked">Not clicked yet</string>
+    <string name="greeting">Hello, DevFest</string>
+</resources>

@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
 import com.thomaskuenneth.threadingdemo.ui.theme.ThreadingDemoTheme
 import java.net.URL
+import kotlin.concurrent.thread
 
 class ComposeThreading : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +28,9 @@ class ComposeThreading : AppCompatActivity() {
             val txt1 = stringResource(id = R.string.not_clicked)
             val msg = remember { mutableStateOf(txt1) }
             Content(msg) {
-                msg.value = getHello()
+                thread {
+                    msg.value = getHello()
+                }
             }
         }
     }

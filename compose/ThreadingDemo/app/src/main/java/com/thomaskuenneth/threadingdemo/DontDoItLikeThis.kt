@@ -3,8 +3,6 @@ package com.thomaskuenneth.threadingdemo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.thomaskuenneth.threadingdemo.databinding.ActivityDontDoItLikeThisBinding
-import java.net.URL
-import kotlin.concurrent.thread
 
 class DontDoItLikeThis : AppCompatActivity() {
 
@@ -16,18 +14,7 @@ class DontDoItLikeThis : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.button.setOnClickListener {
-//            binding.textView.text = getString(R.string.greeting)
-            thread {
-                val msg = getHello()
-                runOnUiThread {
-                    binding.textView.text = msg
-                }
-            }
+            binding.textView.text = getString(R.string.greeting)
         }
     }
-
-    private fun getHello() = URL("http://10.0.2.2:8080/hello")
-        .openStream()
-        .bufferedReader()
-        .use { it.readText() }
 }

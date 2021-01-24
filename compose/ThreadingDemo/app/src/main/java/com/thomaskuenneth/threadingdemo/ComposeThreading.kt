@@ -43,7 +43,7 @@ fun Content() {
                 verticalArrangement = Arrangement.Center
             ) {
                 Button(onClick = {
-                    msg.value = txt2
+                    msg.value = getHello()
                 }) {
                     Text(text = stringResource(id = R.string.click))
                 }

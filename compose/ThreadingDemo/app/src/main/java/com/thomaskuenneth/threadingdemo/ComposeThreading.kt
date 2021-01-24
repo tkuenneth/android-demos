@@ -10,13 +10,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.thomaskuenneth.threadingdemo.ui.theme.ThreadingDemoTheme
 import java.net.URL
 
@@ -24,17 +24,17 @@ class ComposeThreading : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Content()
+            val txt1 = stringResource(id = R.string.not_clicked)
+            val msg = remember { mutableStateOf(txt1) }
+            Content(msg) {
+                msg.value = getHello()
+            }
         }
     }
 }
 
 @Composable
-@Preview
-fun Content() {
-    val txt1 = stringResource(id = R.string.not_clicked)
-    val txt2 = stringResource(id = R.string.greeting)
-    val msg = remember { mutableStateOf(txt1) }
+fun Content(msg: State<String>, onClick: () -> Unit) {
     ThreadingDemoTheme {
         Surface(color = MaterialTheme.colors.background) {
             Column(
@@ -42,9 +42,7 @@ fun Content() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Button(onClick = {
-                    msg.value = getHello()
-                }) {
+                Button(onClick = onClick) {
                     Text(text = stringResource(id = R.string.click))
                 }
                 Text(text = msg.value, style = MaterialTheme.typography.h4)

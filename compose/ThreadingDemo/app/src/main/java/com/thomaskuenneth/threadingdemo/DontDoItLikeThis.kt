@@ -18,7 +18,9 @@ class DontDoItLikeThis : AppCompatActivity() {
         binding.button.setOnClickListener {
             thread {
                 val msg = getHello()
-                binding.textView.text = msg
+                runOnUiThread {
+                    binding.textView.text = msg
+                }
             }
         }
     }

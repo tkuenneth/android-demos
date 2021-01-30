@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<alias xmlns:android="http://schemas.android.com/apk/res/android">
+    <intent
+        android:targetClass="com.thomaskuenneth.aliasactivitydemo.MainActivity2"
+        android:targetPackage="com.thomaskuenneth.aliasactivitydemo" />
+</alias>

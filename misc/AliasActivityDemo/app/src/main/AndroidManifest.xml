@@ -10,6 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AliasActivityDemo">
         <activity android:name=".MainActivity2" />
+
+        <activity-alias android:name=".MainActivity"
+            android:targetActivity=".MainActivity2">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity-alias>
+
+        <!--
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,6 +29,8 @@
                 android:name="android.app.alias"
                 android:resource="@xml/alias" />
         </activity>
+        -->
+
     </application>
 
 </manifest>

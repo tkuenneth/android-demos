@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RoleDemo</string>
+    <string name="has_role">Role already held</string>
+</resources>

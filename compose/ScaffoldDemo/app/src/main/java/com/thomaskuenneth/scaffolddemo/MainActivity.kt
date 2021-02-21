@@ -14,6 +14,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.thomaskuenneth.scaffolddemo.ui.theme.ScaffoldDemoTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +51,19 @@ fun Content() {
 //                    }) {
 //                        Icon(Default.Delete, null)
 //                    }
-                    Box {
+                    var height = 0
+                    Box(modifier = Modifier.onGloballyPositioned {
+                        height = it.size.height
+                    }) {
                         IconButton(onClick = {
                             menuOpened = true
                         }) {
                             Icon(Default.MoreVert, null)
                             DropdownMenu(expanded = menuOpened,
+                                offset = DpOffset(
+                                    0.dp,
+                                    -(LocalDensity.current.density * height).dp
+                                ),
                                 onDismissRequest = {
                                     menuOpened = false
                                 }) {

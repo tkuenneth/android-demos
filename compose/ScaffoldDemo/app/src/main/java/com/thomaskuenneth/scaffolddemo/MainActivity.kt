@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Default
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -88,19 +86,35 @@ fun Content() {
                 })
         },
             bottomBar = {
-                BottomAppBar {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Filled.Menu, contentDescription = null)
-                    }
-                    Spacer(Modifier.weight(1f, true))
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Filled.Favorite, contentDescription = null)
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Filled.MoreVert, contentDescription = null)
-                    }
+//                BottomAppBar {
+//                    IconButton(onClick = { }) {
+//                        Icon(Icons.Filled.Menu, contentDescription = null)
+//                    }
+//                    Spacer(Modifier.weight(1f, true))
+//                    IconButton(onClick = { }) {
+//                        Icon(Icons.Filled.Favorite, contentDescription = null)
+//                    }
+//                    IconButton(onClick = { }) {
+//                        Icon(Icons.Filled.MoreVert, contentDescription = null)
+//                    }
+//                }
+
+                BottomNavigation() {
+                    BottomNavigationItem(
+                        icon = { Icon(Icons.Filled.Info, contentDescription = null) },
+                        label = { Text("About") },
+                        selected = false,
+                        onClick = { }
+                    )
+                    BottomNavigationItem(
+                        icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
+                        label = { Text("Settings") },
+                        selected = false,
+                        onClick = { }
+                    )
                 }
-            }) {
+            }
+            ) {
             MyContent()
         }
     }

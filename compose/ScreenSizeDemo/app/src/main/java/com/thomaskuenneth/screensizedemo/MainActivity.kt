@@ -5,9 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
@@ -42,7 +40,7 @@ private val modules = listOf(
 
 private val module: MutableState<Module?> = mutableStateOf(null)
 
-private var isLandscape by mutableStateOf(false)
+private var isTwoColumnMode by mutableStateOf(false)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +51,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onBackPressed() {
-        if (isLandscape)
+        if (isTwoColumnMode)
             super.onBackPressed()
         else {
             if (module.value == null)
@@ -69,9 +67,9 @@ class MainActivity : ComponentActivity() {
 fun ScreenSizeDemo() {
     ScreenSizeDemoTheme {
         Scaffold {
-            isLandscape = (LocalConfiguration.current.orientation
+            isTwoColumnMode = (LocalConfiguration.current.orientation
                     == Configuration.ORIENTATION_LANDSCAPE)
-            if (isLandscape)
+            if (isTwoColumnMode)
                 Landscape(module)
             else
                 Portrait(module)
@@ -83,32 +81,40 @@ fun ScreenSizeDemo() {
 fun Portrait(module: MutableState<Module?>) {
     module.value?.let {
         Module(it)
-    } ?: ModuleSelection(module)
+    } ?: ModuleSelection(module = module)
 }
 
 @Composable
 fun Landscape(module: MutableState<Module?>) {
-    Row {
-        ModuleSelection(module)
+    Row(modifier = Modifier.fillMaxSize()) {
+        ModuleSelection(module = module, modifier = Modifier.weight(weight = 0.3f))
         module.value?.let {
-            Module(it)
+            Module(module = it, modifier = Modifier.weight(0.7f))
         }
     }
 }
 
 @Composable
-fun ModuleSelection(module: MutableState<Module?>) {
+fun ModuleSelection(module: MutableState<Module?>, modifier: Modifier = Modifier) {
     ModuleSelectionList(
         modules,
         callback = {
             module.value = it
-        }
+        },
+        modifier = modifier
     )
 }
 
 @Composable
-fun ModuleSelectionList(modules: List<Module>, callback: (module: Module) -> Unit) {
-    LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
+fun ModuleSelectionList(
+    modules: List<Module>,
+    callback: (module: Module) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+    ) {
         items(modules) { module ->
             ModuleRow(module, callback)
         }
@@ -117,15 +123,29 @@ fun ModuleSelectionList(modules: List<Module>, callback: (module: Module) -> Uni
 
 @Composable
 fun ModuleRow(module: Module, callback: (module: Module) -> Unit) {
-    Column(modifier = Modifier.clickable(onClick = {
-        callback(module)
-    })) {
-        Text(module.title, style = MaterialTheme.typography.subtitle1)
-        Text(module.description, style = MaterialTheme.typography.body2)
+    Column(
+        modifier = Modifier
+            .clickable(onClick = {
+                callback(module)
+            })
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = module.title,
+            style = MaterialTheme.typography.subtitle1
+        )
+        Text(
+            text = module.description,
+            style = MaterialTheme.typography.body2
+        )
     }
 }
 
 @Composable
-fun Module(module: Module) {
-    Text(module.title, style = MaterialTheme.typography.h1)
+fun Module(module: Module, modifier: Modifier = Modifier) {
+    Text(
+        text = module.title,
+        style = MaterialTheme.typography.h1,
+        modifier = modifier.fillMaxSize()
+    )
 }

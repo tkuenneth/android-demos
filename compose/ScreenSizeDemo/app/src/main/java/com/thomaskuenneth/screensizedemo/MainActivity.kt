@@ -87,9 +87,15 @@ fun Portrait(module: MutableState<Module?>) {
 @Composable
 fun Landscape(module: MutableState<Module?>) {
     Row(modifier = Modifier.fillMaxSize()) {
-        ModuleSelection(module = module, modifier = Modifier.weight(weight = 0.3f))
+        ModuleSelection(
+            module = module,
+            modifier = Modifier.weight(weight = 0.3f)
+        )
         module.value?.let {
-            Module(module = it, modifier = Modifier.weight(0.7f))
+            Module(
+                module = it,
+                modifier = Modifier.weight(0.7f)
+            )
         }
     }
 }

@@ -16,6 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.thomaskuenneth.screensizedemo.ui.theme.ScreenSizeDemoTheme
 
 data class Module(
@@ -49,17 +53,6 @@ class MainActivity : ComponentActivity() {
             ScreenSizeDemo()
         }
     }
-
-    override fun onBackPressed() {
-        if (isTwoColumnMode)
-            super.onBackPressed()
-        else {
-            if (module.value == null)
-                super.onBackPressed()
-            else
-                module.value = null
-        }
-    }
 }
 
 @Composable
@@ -79,9 +72,23 @@ fun ScreenSizeDemo() {
 
 @Composable
 fun Portrait(module: MutableState<Module?>) {
-    module.value?.let {
-        Module(it)
-    } ?: ModuleSelection(module = module)
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = "moduleSelection") {
+        composable("moduleSelection") {
+            ModuleSelectionList(
+                modules,
+                callback = {
+                    module.value = it
+                    navController.navigate("module")
+                }
+            )
+        }
+        composable("module") {
+            module.value?.let {
+                Module(it)
+            }
+        }
+    }
 }
 
 @Composable

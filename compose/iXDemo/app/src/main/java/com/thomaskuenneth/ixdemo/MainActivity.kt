@@ -5,10 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -30,7 +29,28 @@ class MainActivity : ComponentActivity() {
             // Greeting()
             // LayoutDemo()
             // ButtonDemo()
-            TextFieldDemo()
+            // TextFieldDemo()
+            ListDemo()
+        }
+    }
+}
+
+@Composable
+fun ListDemo() {
+    val callback = { index: Int -> println("$index selected") }
+    val list = arrayListOf("1", "2", "3")
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        itemsIndexed(list) { index, s ->
+            Text(
+                text = s,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { callback(index) },
+                style = MaterialTheme.typography.subtitle2
+            )
         }
     }
 }

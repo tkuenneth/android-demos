@@ -3,6 +3,8 @@ package com.thomaskuenneth.ixdemo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+@ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +33,34 @@ class MainActivity : ComponentActivity() {
             // LayoutDemo()
             // ButtonDemo()
             // TextFieldDemo()
-            ListDemo()
+            // ListDemo()
+            AnimationDemo()
+        }
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun AnimationDemo() {
+    var visible by remember {
+        mutableStateOf(false)
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            visible = !visible
+        }) {
+            Text(stringResource(id = R.string.click))
+        }
+        AnimatedVisibility(
+            visible = visible
+        ) {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                style = MaterialTheme.typography.h1
+            )
         }
     }
 }

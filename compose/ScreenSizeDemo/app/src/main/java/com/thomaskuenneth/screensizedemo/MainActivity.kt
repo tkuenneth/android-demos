@@ -16,10 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.util.Consumer
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
+import androidx.window.DisplayFeature
+import androidx.window.FoldingFeature
+import androidx.window.WindowBackend
+import androidx.window.WindowManager
 import com.thomaskuenneth.screensizedemo.ui.theme.ScreenSizeDemoTheme
 
 data class Module(
@@ -46,9 +51,23 @@ private val module: MutableState<Module?> = mutableStateOf(null)
 
 private var isTwoColumnMode by mutableStateOf(false)
 
+private var weightModuleSelection by mutableStateOf(0.3F)
+private var weightModule by mutableStateOf(0.7F)
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val wm = WindowManager(this)
+        wm.registerLayoutChangeCallback(mainExecutor, {
+            it.displayFeatures.forEach { feature ->
+                (feature as FoldingFeature).run {
+                    if (isSeparating) {
+                        weightModuleSelection = 0.5F
+                        weightModule = 0.5F
+                    }
+                }
+            }
+        })
         setContent {
             ScreenSizeDemo()
         }
@@ -60,10 +79,11 @@ class MainActivity : ComponentActivity() {
 fun ScreenSizeDemo() {
     ScreenSizeDemoTheme {
         Scaffold {
-            isTwoColumnMode = (LocalConfiguration.current.orientation
-                    == Configuration.ORIENTATION_LANDSCAPE)
+//            isTwoColumnMode = (LocalConfiguration.current.orientation
+//                    == Configuration.ORIENTATION_LANDSCAPE)
+            isTwoColumnMode = LocalConfiguration.current.screenWidthDp >= 600
             if (isTwoColumnMode)
-                Landscape(module)
+                Landscape(module, weightModuleSelection, weightModule)
             else
                 Portrait(module)
         }
@@ -92,16 +112,20 @@ fun Portrait(module: MutableState<Module?>) {
 }
 
 @Composable
-fun Landscape(module: MutableState<Module?>) {
+fun Landscape(
+    module: MutableState<Module?>,
+    weightModuleSelection: Float,
+    weightModule: Float
+) {
     Row(modifier = Modifier.fillMaxSize()) {
         ModuleSelection(
             module = module,
-            modifier = Modifier.weight(weight = 0.3f)
+            modifier = Modifier.weight(weight = weightModuleSelection)
         )
         module.value?.let {
             Module(
                 module = it,
-                modifier = Modifier.weight(0.7f)
+                modifier = Modifier.weight(weightModule)
             )
         }
     }

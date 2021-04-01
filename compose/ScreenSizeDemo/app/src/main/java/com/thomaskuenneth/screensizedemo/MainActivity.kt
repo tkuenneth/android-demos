@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +14,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.util.Consumer
@@ -53,6 +56,7 @@ private var isTwoColumnMode by mutableStateOf(false)
 
 private var weightModuleSelection by mutableStateOf(0.3F)
 private var weightModule by mutableStateOf(0.7F)
+private var width by mutableStateOf(0)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +68,7 @@ class MainActivity : ComponentActivity() {
                     if (isSeparating) {
                         weightModuleSelection = 0.5F
                         weightModule = 0.5F
+                        width = bounds.width()
                     }
                 }
             }
@@ -122,6 +127,7 @@ fun Landscape(
             module = module,
             modifier = Modifier.weight(weight = weightModuleSelection)
         )
+        Spacer(modifier = Modifier.width(LocalDensity.current.run { width.toDp() }))
         module.value?.let {
             Module(
                 module = it,

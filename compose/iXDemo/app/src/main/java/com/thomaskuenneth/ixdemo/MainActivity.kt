@@ -152,6 +152,8 @@ fun Modifier.drawOnYellow() = this.drawBehind {
 
 @Composable
 fun Greeting() {
+//    Text(text = "Hello iX")
+
     Text(text = "Hello iX",
         modifier = Modifier
             .clickable { println("Hello iX") }
@@ -159,4 +161,24 @@ fun Greeting() {
                 1.dp,
                 MaterialTheme.colors.primary
             ))
+
+//    Text(
+//        modifier = Modifier.drawOnYellow(),
+//        text = "Hello Compose"
+//    )
+
+//    Button(onClick = {
+//        println("clicked")
+//    }) {
+//        Text(stringResource(id = R.string.click))
+//    }
+
+//    Button(onClick = {
+//        println("clicked")
+//    }) {
+//        Column {
+//            Text("Zeile 1")
+//            Text("Zeile 2")
+//        }
+//    }
 }

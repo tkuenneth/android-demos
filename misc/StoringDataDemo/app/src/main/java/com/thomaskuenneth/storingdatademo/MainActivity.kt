@@ -39,16 +39,16 @@ class MainActivity : AppCompatActivity() {
         println(current)
         prefs.edit().putBoolean("hasBeenSet", !current).apply()
 
-        val MY_BOOLEAN = booleanPreferencesKey("hasBeenSet")
-        val myCounterFlow: Flow<Boolean> = dataStore.data
+        val key = booleanPreferencesKey("hasBeenSet")
+        val flow: Flow<Boolean> = dataStore.data
             .map { currentPreferences ->
-                currentPreferences[MY_BOOLEAN] ?: false
+                currentPreferences[key] ?: false
             }
         lifecycleScope.launch {
-            println(myCounterFlow.first())
+            println(flow.first())
             dataStore.edit { settings ->
-                val currentCounterValue = settings[MY_BOOLEAN] ?: false
-                settings[MY_BOOLEAN] = !currentCounterValue
+                val currentCounterValue = settings[key] ?: false
+                settings[key] = !currentCounterValue
             }
         }
     }

@@ -8,7 +8,7 @@ android {
     compileSdk 31
     defaultConfig {
         applicationId "eu.thomaskuenneth.appsearchdemo"
-        minSdk 31
+        minSdk 29
         targetSdk 31
         versionCode 1
         versionName "1.0"

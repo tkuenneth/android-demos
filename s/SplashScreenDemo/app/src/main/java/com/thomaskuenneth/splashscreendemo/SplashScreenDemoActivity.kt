@@ -2,6 +2,7 @@ package com.thomaskuenneth.splashscreendemo
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,21 +11,22 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.window.SplashScreen
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 private const val TAG = "MainActivity"
 
-class MyFancyDemoActivity : AppCompatActivity() {
+@SuppressLint("CustomSplashScreen")
+class SplashScreenDemoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "--> ${splashScreen::class.java.name}")
         setContentView(R.layout.activity_main)
 
         var ready = false
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             delay(5000)
             ready = true
         }

@@ -11,14 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SplashScreenDemo">
         <activity
-            android:name=".MainActivity"
-            android:logo="@mipmap/ic_launcher"
-            android:exported="true">
+            android:name=".SplashScreenDemoActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SplashScreenDemo.Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

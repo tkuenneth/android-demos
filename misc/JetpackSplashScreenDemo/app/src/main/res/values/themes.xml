@@ -1,20 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.JetpackSplashScreenDemo" parent="Theme.SplashScreen">
-        <!-- Primary brand color. -->
+
+    <style name="Theme.JetpackSplashScreenDemo" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-
-        <item name="postSplashScreenTheme">@style/Theme.MaterialComponents.DayNight.DarkActionBar</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-
+        <item name="colorAccent">@color/teal_200</item>
     </style>
+
+    <style name="Theme.JetpackSplashScreenDemo.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/teal_200</item>
+        <item name="postSplashScreenTheme">@style/Theme.JetpackSplashScreenDemo</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+    </style>
+
 </resources>

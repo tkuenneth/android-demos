@@ -34,18 +34,24 @@ private const val REQUEST_GALLERY = 0x2908
 
 class PaletteDemoViewModel : ViewModel() {
 
-    private val _source: MutableLiveData<ImageDecoder.Source> =
-        MutableLiveData<ImageDecoder.Source>()
+    private val _bitmap: MutableLiveData<Bitmap> =
+        MutableLiveData<Bitmap>()
 
-    val source: LiveData<ImageDecoder.Source> = _source
+    val bitmap: LiveData<Bitmap>
+        get() = _bitmap
 
-    lateinit var bitmap: Bitmap
-    lateinit var palette: Palette
+    fun setBitmap(bitmap: Bitmap) {
+        _bitmap.value = bitmap
+    }
 
-    fun setSource(source: ImageDecoder.Source) {
-        bitmap = ImageDecoder.decodeBitmap(source).asShared()
-        palette = Palette.Builder(bitmap).generate()
-        _source.value = source
+    private val _palette: MutableLiveData<Palette> =
+        MutableLiveData<Palette>()
+
+    val palette: LiveData<Palette>
+        get() = _palette
+
+    fun setPalette(palette: Palette) {
+        _palette.value = palette
     }
 }
 
@@ -74,12 +80,15 @@ class PaletteDemoActivity : ComponentActivity() {
                 if (resultCode == RESULT_OK) {
                     intent?.let {
                         it.data?.let { uri ->
+                            val source = ImageDecoder.createSource(
+                                contentResolver,
+                                uri
+                            )
+                            val bitmap = ImageDecoder.decodeBitmap(source).asShared()
+                            viewModel.setBitmap(bitmap)
                             lifecycleScope.launch {
-                                viewModel.setSource(
-                                    ImageDecoder.createSource(
-                                        contentResolver,
-                                        uri
-                                    )
+                                viewModel.setPalette(
+                                    Palette.Builder(bitmap).generate()
                                 )
                             }
                         }
@@ -104,7 +113,8 @@ fun PaletteDemo(
     viewModel: PaletteDemoViewModel = viewModel(),
     onClick: () -> Unit
 ) {
-    val source = viewModel.source.observeAsState()
+    val bitmap = viewModel.bitmap.observeAsState()
+    val palette = viewModel.palette.observeAsState()
     Scaffold(topBar = {
         TopAppBar(title = { Text(stringResource(id = R.string.app_name)) })
     },
@@ -117,19 +127,21 @@ fun PaletteDemo(
             }
         }
     ) {
-        source.value?.let {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            bitmap.value?.run {
                 Image(
-                    bitmap = viewModel.bitmap.asImageBitmap(),
+                    bitmap = asImageBitmap(),
                     contentDescription = null,
                     alignment = Alignment.Center
                 )
-                viewModel.palette.swatches.forEach {
+            }
+            palette.value?.run {
+                swatches.forEach {
                     Box(
                         modifier = Modifier
                             .padding(top = 8.dp)

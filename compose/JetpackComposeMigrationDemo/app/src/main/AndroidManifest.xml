@@ -13,7 +13,7 @@
         <activity
             android:name=".ViewActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/view_activity"
             android:theme="@style/Theme.JetpackMigrationDemo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
         <activity
             android:name=".ComposeActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/compose_activity"
             android:theme="@style/Theme.JetpackMigrationDemo.NoActionBar" />
     </application>
 

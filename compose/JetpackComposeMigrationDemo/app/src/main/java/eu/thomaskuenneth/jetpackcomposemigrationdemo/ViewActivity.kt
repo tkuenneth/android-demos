@@ -16,24 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import eu.thomaskuenneth.jetpackcomposemigrationdemo.databinding.LayoutBinding
 import eu.thomaskuenneth.jetpackcomposemigrationdemo.ui.theme.JetpackMigrationDemoTheme
-
-class MyViewModel : ViewModel() {
-
-    private val _sliderValue: MutableLiveData<Float> =
-        MutableLiveData<Float>()
-
-    val sliderValue: LiveData<Float>
-        get() = _sliderValue
-
-    fun setSliderValue(value: Float) {
-        _sliderValue.value = value
-    }
-}
 
 class ViewActivity : AppCompatActivity() {
 
@@ -42,9 +26,11 @@ class ViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel: MyViewModel by viewModels()
-        viewModel.setSliderValue(0F)
         binding = LayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        viewModel.sliderValue.observe(this) {
+            binding.slider.value = it
+        }
         binding.slider.addOnChangeListener { _, value, _ -> viewModel.setSliderValue(value) }
         binding.composeView.run {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -88,7 +74,7 @@ fun ComposeDemo(value: Float, onClick: () -> Unit) {
                 onClick = onClick,
                 modifier = Modifier.padding(top = 16.dp)
             ) {
-                Text(text = stringResource(id = R.string.app_name))
+                Text(text = stringResource(id = R.string.compose_activity))
             }
         }
     }

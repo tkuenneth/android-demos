@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">JetpackComposeMigrationDemo</string>
+    <string name="view_activity">ViewActivity</string>
+    <string name="compose_activity">ComposeActivity</string>
 </resources>

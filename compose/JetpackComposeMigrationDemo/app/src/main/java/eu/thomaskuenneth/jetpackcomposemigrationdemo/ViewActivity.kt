@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import eu.thomaskuenneth.jetpackcomposemigrationdemo.databinding.LayoutBinding
 import eu.thomaskuenneth.jetpackcomposemigrationdemo.ui.theme.JetpackMigrationDemoTheme
 
+const val KEY = "key"
+
 class ViewActivity : AppCompatActivity() {
 
     private lateinit var binding: LayoutBinding
@@ -26,6 +28,7 @@ class ViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel: MyViewModel by viewModels()
+        viewModel.setSliderValue(intent.getFloatExtra(KEY, 0F))
         binding = LayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel.sliderValue.observe(this) {
@@ -38,12 +41,12 @@ class ViewActivity : AppCompatActivity() {
                 val sliderValue = viewModel.sliderValue.observeAsState()
                 sliderValue.value?.let {
                     ComposeDemo(it) {
-                        startActivity(
-                            Intent(
-                                context,
-                                ComposeActivity::class.java
-                            )
+                        val i = Intent(
+                            context,
+                            ComposeActivity::class.java
                         )
+                        i.putExtra(KEY, it)
+                        startActivity(i)
                     }
                 }
             }

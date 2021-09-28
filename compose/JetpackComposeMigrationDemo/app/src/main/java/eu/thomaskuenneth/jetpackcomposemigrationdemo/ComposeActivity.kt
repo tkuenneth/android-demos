@@ -1,5 +1,6 @@
 package eu.thomaskuenneth.jetpackcomposemigrationdemo
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,12 +14,13 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidViewBinding
+import eu.thomaskuenneth.jetpackcomposemigrationdemo.databinding.CustomBinding
 import eu.thomaskuenneth.jetpackcomposemigrationdemo.ui.theme.JetpackMigrationDemoTheme
 
 class ComposeActivity : ComponentActivity() {
@@ -27,13 +29,21 @@ class ComposeActivity : ComponentActivity() {
         val viewModel: MyViewModel by viewModels()
         viewModel.setSliderValue(intent.getFloatExtra(KEY, 0F))
         setContent {
-            ViewIntegrationDemo(viewModel.sliderValue.observeAsState(0F))
+            ViewIntegrationDemo(viewModel) {
+                val i = Intent(
+                    this,
+                    ComposeActivity::class.java
+                )
+                i.putExtra(KEY, viewModel.sliderValue.value)
+                startActivity(i)
+            }
         }
     }
 }
 
 @Composable
-fun ViewIntegrationDemo(sliderValueState: State<Float>) {
+fun ViewIntegrationDemo(viewModel: MyViewModel, onClick: () -> Unit) {
+    val sliderValueState = viewModel.sliderValue.observeAsState()
     JetpackMigrationDemoTheme {
         Scaffold(modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -50,9 +60,20 @@ fun ViewIntegrationDemo(sliderValueState: State<Float>) {
             ) {
                 Slider(
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = {},
-                    value = sliderValueState.value
+                    onValueChange = {
+                        viewModel.setSliderValue(it)
+                    },
+                    value = sliderValueState.value ?: 0F
                 )
+                AndroidViewBinding(
+                    modifier = Modifier.fillMaxWidth(),
+                    factory = CustomBinding::inflate
+                ) {
+                    textView.text = sliderValueState.value.toString()
+                    button.setOnClickListener {
+                        onClick()
+                    }
+                }
             }
         }
     }

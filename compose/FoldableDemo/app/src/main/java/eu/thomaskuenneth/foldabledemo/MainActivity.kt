@@ -96,7 +96,6 @@ fun Content(
                         ColouredBoxWithWeight(0.333F, Color.Green)
                         ColouredBoxWithWeight(0.333F, Color.Blue)
                     }
-                    val weightLeft = if (hasGap) 1F else 0.5F
                 }
             }
         }

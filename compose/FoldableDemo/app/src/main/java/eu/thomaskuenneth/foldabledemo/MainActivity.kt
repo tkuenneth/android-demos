@@ -20,11 +20,11 @@ import androidx.window.layout.WindowMetrics
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val repo = windowInfoRepository()
+        val r = windowInfoRepository()
         super.onCreate(savedInstanceState)
         setContent {
-            val metrics by repo.currentWindowMetrics.collectAsState(null)
-            val info by repo.windowLayoutInfo.collectAsState(null)
+            val m by r.currentWindowMetrics.collectAsState(null)
+            val i by r.windowLayoutInfo.collectAsState(null)
             Scaffold(modifier = Modifier.fillMaxSize(),
                 topBar = {
                     TopAppBar(title = {
@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
                     })
                 }) {
                 Content(
-                    metrics,
-                    info
+                    m,
+                    i
                 )
             }
         }

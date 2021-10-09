@@ -7,7 +7,7 @@ android {
     compileSdk 31
     defaultConfig {
         applicationId "eu.thomaskuenneth.foldabledemo"
-        minSdk 30
+        minSdk 29
         targetSdk 31
         versionCode 1
         versionName "1.0"

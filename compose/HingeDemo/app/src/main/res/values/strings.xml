@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HingeDemo</string>
+    <string name="title">This really is a ridiculously long title, but we need it this way to show a potential issue</string>
 </resources>

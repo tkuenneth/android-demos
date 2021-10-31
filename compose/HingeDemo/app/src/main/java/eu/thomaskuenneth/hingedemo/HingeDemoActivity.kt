@@ -48,9 +48,10 @@ fun TopBar() {
 @Composable
 fun BottomBar() {
     BottomNavigation() {
-        for (i in 1..5) {
-            BottomNavigationItem(selected = false,
-                onClick = { /*TODO*/ },
+        var selected by remember { mutableStateOf(0) }
+        for (i in 0..4) {
+            BottomNavigationItem(selected = selected == i,
+                onClick = { selected = i },
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_android_black_24dp),
@@ -58,7 +59,7 @@ fun BottomBar() {
                     )
                 },
                 label = {
-                    Text(text = "Navigation #$i")
+                    Text(text = "#${i + 1}")
                 })
         }
     }
@@ -79,10 +80,14 @@ fun Content(modifier: Modifier = Modifier) {
                     })
             }
         }
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopStart) {
-            Text("#${selectedIndex + 1}",
-            style = MaterialTheme.typography.h1)
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopStart
+        ) {
+            Text(
+                "#${selectedIndex + 1}",
+                style = MaterialTheme.typography.h1
+            )
         }
     }
 }

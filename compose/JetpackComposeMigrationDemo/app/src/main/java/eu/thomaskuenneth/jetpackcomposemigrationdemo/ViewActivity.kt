@@ -28,12 +28,12 @@ class ViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel: MyViewModel by viewModels()
-        viewModel.setSliderValue(intent.getFloatExtra(KEY, 0F))
-        binding = LayoutBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         viewModel.sliderValue.observe(this) {
             binding.slider.value = it
         }
+        viewModel.setSliderValue(intent.getFloatExtra(KEY, 0F))
+        binding = LayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         binding.slider.addOnChangeListener { _, value, _ -> viewModel.setSliderValue(value) }
         binding.composeView.run {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

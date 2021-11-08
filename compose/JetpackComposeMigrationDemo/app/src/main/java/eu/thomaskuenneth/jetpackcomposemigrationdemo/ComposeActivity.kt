@@ -32,7 +32,7 @@ class ComposeActivity : ComponentActivity() {
             ViewIntegrationDemo(viewModel) {
                 val i = Intent(
                     this,
-                    ComposeActivity::class.java
+                    ViewActivity::class.java
                 )
                 i.putExtra(KEY, viewModel.sliderValue.value)
                 startActivity(i)

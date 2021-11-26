@@ -17,11 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.window.layout.FoldingFeature
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
-import androidx.window.layout.WindowLayoutInfo
-import androidx.window.layout.WindowMetrics
-import androidx.window.layout.WindowMetricsCalculator
+import androidx.lifecycle.lifecycleScope
+import androidx.window.layout.*
 import eu.thomaskuenneth.hingedemo.ui.theme.HingeDemoTheme
 
 
@@ -35,14 +32,19 @@ data class HingeDef(
 class HingeDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val repo = windowInfoRepository()
-        setContent {
-            val layoutInfo by repo.windowLayoutInfo.collectAsState(null)
-            HingeDemoTheme {
-                HingeDemo(
-                    layoutInfo,
-                    WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(this)
+        lifecycleScope.launchWhenResumed {
+            setContent {
+                val layoutInfo by WindowInfoTracker.getOrCreate(this@HingeDemoActivity)
+                    .windowLayoutInfo(this@HingeDemoActivity).collectAsState(
+                    initial = null
                 )
+                HingeDemoTheme {
+                    HingeDemo(
+                        layoutInfo,
+                        WindowMetricsCalculator.getOrCreate()
+                            .computeCurrentWindowMetrics(this@HingeDemoActivity)
+                    )
+                }
             }
         }
     }
@@ -108,21 +110,19 @@ fun TopBar(hingeDef: HingeDef) {
 @Composable
 fun BottomBar(hasGap: Boolean) {
     if (!hasGap)
-        BottomNavigation() {
+        BottomNavigation {
             var selected by remember { mutableStateOf(0) }
-            for (i in 0..4) {
-                BottomNavigationItem(selected = i == selected,
-                    onClick = { selected = i },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_android_black_24dp),
-                            contentDescription = null
-                        )
-                    },
-                    label = {
-                        Text(text = "#${i + 1}")
-                    })
-            }
+            for (i in 0..4) BottomNavigationItem(selected = i == selected,
+                onClick = { selected = i },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_android_black_24dp),
+                        contentDescription = null
+                    )
+                },
+                label = {
+                    Text(text = "#${i + 1}")
+                })
         }
 }
 

@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 
+@ExperimentalMaterial3Api
 class BadgeDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +27,12 @@ class BadgeDemoActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun BadgeDemo() {
     val index = rememberSaveable { mutableStateOf(0) }
     Scaffold(topBar = {
-        TopAppBar(title = {
+        SmallTopAppBar(title = {
             Text(text = stringResource(id = R.string.app_name))
         })
     },
@@ -43,9 +45,9 @@ fun BadgeDemo() {
 
 @Composable
 fun BottomBar(index: MutableState<Int>) {
-    BottomNavigation {
+    NavigationBar() {
         for (i in 0..2)
-            BottomNavigationItem(selected = i == index.value,
+            NavigationBarItem(selected = i == index.value,
                 onClick = { index.value = i },
                 icon = {
                     if (i != 1)
@@ -78,12 +80,12 @@ fun Content(index: MutableState<Int>) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.surface),
+            .background(color = MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.Center
     ) {
         MyText(
             index = index.value,
-            style = MaterialTheme.typography.h3
+            style = MaterialTheme.typography.headlineMedium
         )
     }
 }

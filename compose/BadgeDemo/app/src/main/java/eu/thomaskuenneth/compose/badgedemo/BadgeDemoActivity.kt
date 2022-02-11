@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 
-@ExperimentalMaterialApi
 class BadgeDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +26,6 @@ class BadgeDemoActivity : ComponentActivity() {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun BadgeDemo() {
     val index = rememberSaveable { mutableStateOf(0) }
@@ -43,7 +41,6 @@ fun BadgeDemo() {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun BottomBar(index: MutableState<Int>) {
     BottomNavigation {
@@ -57,8 +54,10 @@ fun BottomBar(index: MutableState<Int>) {
                             contentDescription = null
                         )
                     else {
-                        BadgeBox(badgeContent = {
-                            Text("New")
+                        BadgedBox(badge = {
+                            Badge {
+                                Text("New")
+                            }
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_baseline_android_24),

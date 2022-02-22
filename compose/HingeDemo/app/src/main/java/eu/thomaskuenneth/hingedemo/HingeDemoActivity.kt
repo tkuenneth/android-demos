@@ -17,9 +17,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.*
 import eu.thomaskuenneth.hingedemo.ui.theme.HingeDemoTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 data class HingeDef(
@@ -32,18 +36,20 @@ data class HingeDef(
 class HingeDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launchWhenResumed {
-            setContent {
-                val layoutInfo by WindowInfoTracker.getOrCreate(this@HingeDemoActivity)
-                    .windowLayoutInfo(this@HingeDemoActivity).collectAsState(
-                    initial = null
-                )
-                HingeDemoTheme {
-                    HingeDemo(
-                        layoutInfo,
-                        WindowMetricsCalculator.getOrCreate()
-                            .computeCurrentWindowMetrics(this@HingeDemoActivity)
-                    )
+        lifecycleScope.launch(Dispatchers.Main) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                setContent {
+                    val layoutInfo by WindowInfoTracker.getOrCreate(this@HingeDemoActivity)
+                        .windowLayoutInfo(this@HingeDemoActivity).collectAsState(
+                            initial = null
+                        )
+                    HingeDemoTheme {
+                        HingeDemo(
+                            layoutInfo,
+                            WindowMetricsCalculator.getOrCreate()
+                                .computeCurrentWindowMetrics(this@HingeDemoActivity)
+                        )
+                    }
                 }
             }
         }

@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val metrics = WindowMetricsCalculator.getOrCreate()
-            .computeCurrentWindowMetrics(this@MainActivity)
+            .computeCurrentWindowMetrics(this)
         setContent {
             Scaffold(modifier = Modifier.fillMaxSize(),
                 topBar = {
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                         Text(stringResource(id = R.string.app_name))
                     })
                 }) {
-                val layoutInfo by WindowInfoTracker.getOrCreate(this@MainActivity)
+                val layoutInfo by WindowInfoTracker.getOrCreate(this)
                     .windowLayoutInfo(this@MainActivity).collectAsState(
                         initial = null
                     )

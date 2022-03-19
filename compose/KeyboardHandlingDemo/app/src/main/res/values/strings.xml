@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">KeyboardHandlingDemo</string>
+    <string name="calc">Calculate</string>
+</resources>

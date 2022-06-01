@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         sb.append("\n")
         sb.append("\n")
         for (i in 1..20) {
-            if (sb.length > 0) {
+            if (sb.isNotEmpty()) {
                 sb.append(" ")
             }
             sb.append("Die Datenschutzgrundverordnung.")

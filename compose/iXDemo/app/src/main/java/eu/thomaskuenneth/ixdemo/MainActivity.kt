@@ -1,4 +1,4 @@
-package com.thomaskuenneth.ixdemo
+package eu.thomaskuenneth.ixdemo
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,7 +24,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +38,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun AnimationDemo() {
     var visible by remember {

@@ -1,4 +1,4 @@
-package com.thomaskuenneth.ixdemo.ui.theme
+package eu.thomaskuenneth.ixdemo.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

@@ -16,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -77,7 +78,7 @@ fun Buttons() {
         OutlinedButton(modifier = Modifier
             .background(Purple200)
             .padding(32.dp),
-            onClick = {}) {
+            onClick = { println("Hello") }) {
             Text("Button #1")
         }
         Box(
@@ -86,15 +87,29 @@ fun Buttons() {
                 .padding(32.dp),
             contentAlignment = Alignment.Center,
         ) {
-            OutlinedButton(
-                onClick = {}) {
-                Text(
-                    text = "Button #2",
-                    modifier = Modifier.padding(
-                        32.dp
-                    )
-                )
-            }
+//            OutlinedButton(
+//                onClick = { println("Hello")}) {
+//                Text(
+//                    text = "Button #2",
+//                    modifier = Modifier.padding(
+//                        32.dp
+//                    )
+//                )
+//            }
+            MyButton()
         }
     }
+}
+
+@Composable
+@Preview
+fun MyButton() {
+    Text(modifier = Modifier
+        .clickable {
+            println("Hello")
+        }
+        .background(Color.LightGray)
+        .padding(32.dp)
+        .offset(x = (-26).dp, y = (-26).dp),
+    text = "Click me")
 }

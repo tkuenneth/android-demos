@@ -10,7 +10,6 @@ import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowMetricsCalculator
 import com.thomaskuenneth.windowmanagerdemo.databinding.MainBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {

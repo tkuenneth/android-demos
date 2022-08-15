@@ -31,14 +31,15 @@ class MainActivity : ComponentActivity() {
                     TopAppBar(title = {
                         Text(stringResource(id = R.string.app_name))
                     })
-                }) {
+                }) { padding ->
                 val layoutInfo by WindowInfoTracker.getOrCreate(this)
                     .windowLayoutInfo(this@MainActivity).collectAsState(
                         initial = null
                     )
                 Content(
-                    metrics,
-                    layoutInfo
+                    modifier = Modifier.padding(padding),
+                    windowMetrics = metrics,
+                    windowLayoutInfo = layoutInfo
                 )
             }
         }
@@ -47,10 +48,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Content(
+    modifier: Modifier = Modifier,
     windowMetrics: WindowMetrics?,
     windowLayoutInfo: WindowLayoutInfo?
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = modifier.fillMaxSize()) {
         windowMetrics?.let { wm ->
             val widthDp = with(LocalDensity.current) {
                 wm.bounds.width().toDp()

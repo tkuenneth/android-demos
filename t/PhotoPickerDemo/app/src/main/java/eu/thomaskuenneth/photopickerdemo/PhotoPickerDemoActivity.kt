@@ -24,7 +24,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 
-class MainActivity : ComponentActivity() {
+class PhotoPickerDemoActivity : ComponentActivity() {
 
     private lateinit var uri: MutableState<Uri?>
 

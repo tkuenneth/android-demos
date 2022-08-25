@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PhotoPickerDemo"
         android:localeConfig="@xml/locales_config"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <activity
             android:name=".PhotoPickerDemoActivity"

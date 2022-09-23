@@ -6,6 +6,8 @@ import android.graphics.ImageDecoder
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,8 +31,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.palette.graphics.Palette
 import com.thomaskuenneth.palettedemo.ui.theme.PaletteDemoTheme
 import kotlinx.coroutines.launch
-
-private const val REQUEST_GALLERY = 0x2908
 
 class PaletteDemoViewModel : ViewModel() {
 
@@ -58,26 +58,14 @@ class PaletteDemoViewModel : ViewModel() {
 class PaletteDemoActivity : ComponentActivity() {
 
     private lateinit var viewModel: PaletteDemoViewModel
+    private lateinit var launcher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(PaletteDemoViewModel::class.java)
-        setContent {
-            PaletteDemoTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    PaletteDemo(
-                        onClick = { showGallery() }
-                    )
-                }
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        super.onActivityResult(requestCode, resultCode, intent)
-        when (requestCode) {
-            REQUEST_GALLERY -> {
-                if (resultCode == RESULT_OK) {
+        launcher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
                     intent?.let {
                         it.data?.let { uri ->
                             val source = ImageDecoder.createSource(
@@ -95,6 +83,14 @@ class PaletteDemoActivity : ComponentActivity() {
                     }
                 }
             }
+        setContent {
+            PaletteDemoTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    PaletteDemo(
+                        onClick = { showGallery() }
+                    )
+                }
+            }
         }
     }
 
@@ -104,7 +100,7 @@ class PaletteDemoActivity : ComponentActivity() {
         val mimeTypes =
             arrayOf("image/jpeg", "image/png")
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        startActivityForResult(intent, REQUEST_GALLERY)
+        launcher.launch(intent)
     }
 }
 
@@ -127,29 +123,31 @@ fun PaletteDemo(
             }
         }
     ) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            bitmap.value?.run {
-                Image(
-                    bitmap = asImageBitmap(),
-                    contentDescription = null,
-                    alignment = Alignment.Center
-                )
-            }
-            palette.value?.run {
-                swatches.forEach {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .fillMaxWidth()
-                            .height(32.dp)
-                            .clip(RectangleShape)
-                            .background(Color(it.rgb))
+        Surface(modifier = Modifier.padding(it)) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                bitmap.value?.run {
+                    Image(
+                        bitmap = asImageBitmap(),
+                        contentDescription = null,
+                        alignment = Alignment.Center
                     )
+                }
+                palette.value?.run {
+                    swatches.forEach { swatch ->
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxWidth()
+                                .height(32.dp)
+                                .clip(RectangleShape)
+                                .background(Color(swatch.rgb))
+                        )
+                    }
                 }
             }
         }

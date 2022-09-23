@@ -1,12 +1,12 @@
 package com.thomaskuenneth.palettedemo
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,28 +58,25 @@ class PaletteDemoViewModel : ViewModel() {
 class PaletteDemoActivity : ComponentActivity() {
 
     private lateinit var viewModel: PaletteDemoViewModel
-    private lateinit var launcher: ActivityResultLauncher<Intent>
+    private lateinit var launcher: ActivityResultLauncher<PickVisualMediaRequest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PaletteDemoViewModel::class.java)
+        viewModel = ViewModelProvider(this)[PaletteDemoViewModel::class.java]
         launcher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    intent?.let {
-                        it.data?.let { uri ->
-                            val source = ImageDecoder.createSource(
-                                contentResolver,
-                                uri
-                            )
-                            val bitmap = ImageDecoder.decodeBitmap(source).asShared()
-                            viewModel.setBitmap(bitmap)
-                            lifecycleScope.launch {
-                                viewModel.setPalette(
-                                    Palette.Builder(bitmap).generate()
-                                )
-                            }
-                        }
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia())
+            {
+                it?.let { uri ->
+                    val source = ImageDecoder.createSource(
+                        contentResolver,
+                        uri
+                    )
+                    val bitmap = ImageDecoder.decodeBitmap(source).asShared()
+                    viewModel.setBitmap(bitmap)
+                    lifecycleScope.launch {
+                        viewModel.setPalette(
+                            Palette.Builder(bitmap).generate()
+                        )
                     }
                 }
             }
@@ -95,12 +92,7 @@ class PaletteDemoActivity : ComponentActivity() {
     }
 
     private fun showGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        val mimeTypes =
-            arrayOf("image/jpeg", "image/png")
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        launcher.launch(intent)
+        launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 }
 

@@ -71,7 +71,12 @@ class PaletteDemoActivity : ComponentActivity() {
                         contentResolver,
                         uri
                     )
-                    val bitmap = ImageDecoder.decodeBitmap(source).asShared()
+                    val bitmap = ImageDecoder.decodeBitmap(
+                        source
+                    ) { decoder, _, _ ->
+                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                        decoder.isMutableRequired = true
+                    }
                     viewModel.setBitmap(bitmap)
                     lifecycleScope.launch {
                         viewModel.setPalette(

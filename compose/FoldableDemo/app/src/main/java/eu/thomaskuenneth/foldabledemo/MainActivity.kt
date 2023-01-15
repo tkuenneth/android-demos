@@ -111,7 +111,11 @@ fun LargeScreen(hingeDef: HingeDef) {
                 .weight(0.333F)
             Box(modifier = localModifier) {
                 RedBox()
+            }
+            Box(modifier = localModifier) {
                 YellowBox()
+            }
+            Box(modifier = localModifier) {
                 GreenBox()
             }
         }

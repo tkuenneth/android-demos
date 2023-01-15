@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FoldableDemo</string>
+    <string name="portrait">Portrait</string>
+    <string name="landscape">Landscape</string>
 </resources>

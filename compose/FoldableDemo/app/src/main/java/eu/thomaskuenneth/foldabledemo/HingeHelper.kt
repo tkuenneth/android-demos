@@ -8,8 +8,8 @@ import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowLayoutInfo
 import androidx.window.layout.WindowMetrics
 
-data class HingeDef(
-    val hasHinge: Boolean,
+data class FoldDef(
+    val hasFold: Boolean,
     val foldOrientation: FoldingFeature.Orientation?,
     val foldWidth: Dp,
     val foldHeight: Dp,
@@ -22,10 +22,10 @@ data class HingeDef(
 )
 
 @Composable
-fun createHingeDef(
+fun createFoldDef(
     layoutInfo: WindowLayoutInfo?,
     windowMetrics: WindowMetrics
-): HingeDef {
+): FoldDef {
     var foldOrientation: FoldingFeature.Orientation? = null
     var widthLeftOrTop = 0
     var heightLeftOrTop = 0
@@ -52,7 +52,7 @@ fun createHingeDef(
         }
     }
     return with(LocalDensity.current) {
-        HingeDef(
+        FoldDef(
             foldOrientation = foldOrientation,
             widthLeftOrTop = widthLeftOrTop.toDp(),
             heightLeftOrTop = heightLeftOrTop.toDp(),
@@ -65,7 +65,7 @@ fun createHingeDef(
                 dpWidth = windowWidthDp(windowMetrics = windowMetrics).value,
                 dpHeight = windowHeightDp(windowMetrics = windowMetrics).value
             ),
-            hasHinge = foldOrientation != null
+            hasFold = foldOrientation != null
         )
     }
 }

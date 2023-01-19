@@ -20,18 +20,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.layout.*
 
-class MainActivity : ComponentActivity() {
+class FoldableDemoActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launchWhenResumed {
             setContent {
-                val layoutInfo by WindowInfoTracker.getOrCreate(this@MainActivity)
-                    .windowLayoutInfo(this@MainActivity).collectAsState(
+                val layoutInfo by WindowInfoTracker.getOrCreate(this@FoldableDemoActivity)
+                    .windowLayoutInfo(this@FoldableDemoActivity).collectAsState(
                         initial = null
                     )
                 val windowMetrics = WindowMetricsCalculator.getOrCreate()
-                    .computeCurrentWindowMetrics(this@MainActivity)
+                    .computeCurrentWindowMetrics(this@FoldableDemoActivity)
                 MaterialTheme(
                     content = {
                         Scaffold(
@@ -64,41 +64,41 @@ fun Content(
     windowMetrics: WindowMetrics,
     paddingValues: PaddingValues
 ) {
-    val hingeDef = createHingeDef(layoutInfo, windowMetrics)
+    val foldDef = createFoldDef(layoutInfo, windowMetrics)
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues = paddingValues)
     ) {
-        if (hingeDef.hasHinge) {
+        if (foldDef.hasFold) {
             FoldableScreen(
-                hingeDef = hingeDef
+                foldDef = foldDef
             )
-        } else if (hingeDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
+        } else if (foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
             LargeScreen(
-                hingeDef = hingeDef
+                foldDef = foldDef
             )
         } else {
             SmartphoneScreen(
-                hingeDef = hingeDef
+                foldDef = foldDef
             )
         }
     }
 }
 
 @Composable
-fun SmartphoneScreen(hingeDef: HingeDef) {
+fun SmartphoneScreen(foldDef: FoldDef) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         YellowBox()
-        PortraitOrLandscapeText(hingeDef = hingeDef)
+        PortraitOrLandscapeText(foldDef = foldDef)
     }
 }
 
 @Composable
-fun LargeScreen(hingeDef: HingeDef) {
+fun LargeScreen(foldDef: FoldDef) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -119,17 +119,17 @@ fun LargeScreen(hingeDef: HingeDef) {
                 GreenBox()
             }
         }
-        PortraitOrLandscapeText(hingeDef)
+        PortraitOrLandscapeText(foldDef)
     }
 }
 
 @Composable
-fun FoldableScreen(hingeDef: HingeDef) {
+fun FoldableScreen(foldDef: FoldDef) {
     val hinge = @Composable {
         Spacer(
             modifier = Modifier
-                .width(hingeDef.foldWidth)
-                .height(hingeDef.foldHeight)
+                .width(foldDef.foldWidth)
+                .height(foldDef.foldHeight)
         )
     }
     val firstComposable = @Composable {
@@ -139,12 +139,12 @@ fun FoldableScreen(hingeDef: HingeDef) {
         GreenBox()
     }
     val container = @Composable {
-        if (hingeDef.foldOrientation == FoldingFeature.Orientation.VERTICAL) {
+        if (foldDef.foldOrientation == FoldingFeature.Orientation.VERTICAL) {
             Row(modifier = Modifier.fillMaxSize()) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(hingeDef.widthLeftOrTop)
+                        .width(foldDef.widthLeftOrTop)
                 ) {
                     firstComposable()
                 }
@@ -152,7 +152,7 @@ fun FoldableScreen(hingeDef: HingeDef) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(hingeDef.widthRightOrBottom)
+                        .width(foldDef.widthRightOrBottom)
                 ) {
                     secondComposable()
                 }
@@ -170,7 +170,7 @@ fun FoldableScreen(hingeDef: HingeDef) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(hingeDef.heightRightOrBottom)
+                        .height(foldDef.heightRightOrBottom)
                 ) {
                     secondComposable()
                 }
@@ -217,10 +217,10 @@ fun GreenBox() {
 }
 
 @Composable
-fun PortraitOrLandscapeText(hingeDef: HingeDef) {
+fun PortraitOrLandscapeText(foldDef: FoldDef) {
     Text(
         text = stringResource(
-            id = if (hingeDef.isPortrait)
+            id = if (foldDef.isPortrait)
                 R.string.portrait
             else
                 R.string.landscape

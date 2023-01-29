@@ -1,5 +1,7 @@
 package eu.thomaskuenneth.foldabledemo
 
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -48,10 +51,22 @@ class FoldableDemoActivity : ComponentActivity() {
                             )
                         }
                     },
-                    colorScheme = if (isSystemInDarkTheme())
-                        darkColorScheme()
-                    else
-                        lightColorScheme()
+                    colorScheme = with(isSystemInDarkTheme()) {
+                        val hasDynamicColor = Build.VERSION.SDK_INT >= VERSION_CODES.S
+                        val context = LocalContext.current
+                        when (this) {
+                            true -> if (hasDynamicColor) {
+                                dynamicDarkColorScheme(context)
+                            } else {
+                                darkColorScheme()
+                            }
+                            false -> if (hasDynamicColor) {
+                                dynamicLightColorScheme(context)
+                            } else {
+                                lightColorScheme()
+                            }
+                        }
+                    }
                 )
             }
         }

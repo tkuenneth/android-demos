@@ -19,55 +19,60 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.layout.*
+import kotlinx.coroutines.launch
 
 class FoldableDemoActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launchWhenResumed {
-            setContent {
-                val layoutInfo by WindowInfoTracker.getOrCreate(this@FoldableDemoActivity)
-                    .windowLayoutInfo(this@FoldableDemoActivity).collectAsState(
-                        initial = null
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                setContent {
+                    val layoutInfo by WindowInfoTracker.getOrCreate(this@FoldableDemoActivity)
+                        .windowLayoutInfo(this@FoldableDemoActivity).collectAsState(
+                            initial = null
+                        )
+                    val windowMetrics = WindowMetricsCalculator.getOrCreate()
+                        .computeCurrentWindowMetrics(this@FoldableDemoActivity)
+                    MaterialTheme(
+                        content = {
+                            Scaffold(
+                                topBar = {
+                                    TopAppBar(title = {
+                                        Text(stringResource(id = R.string.app_name))
+                                    })
+                                }
+                            ) { padding ->
+                                Content(
+                                    layoutInfo = layoutInfo,
+                                    windowMetrics = windowMetrics,
+                                    paddingValues = padding
+                                )
+                            }
+                        },
+                        colorScheme = with(isSystemInDarkTheme()) {
+                            val hasDynamicColor = Build.VERSION.SDK_INT >= VERSION_CODES.S
+                            val context = LocalContext.current
+                            when (this) {
+                                true -> if (hasDynamicColor) {
+                                    dynamicDarkColorScheme(context)
+                                } else {
+                                    darkColorScheme()
+                                }
+                                false -> if (hasDynamicColor) {
+                                    dynamicLightColorScheme(context)
+                                } else {
+                                    lightColorScheme()
+                                }
+                            }
+                        }
                     )
-                val windowMetrics = WindowMetricsCalculator.getOrCreate()
-                    .computeCurrentWindowMetrics(this@FoldableDemoActivity)
-                MaterialTheme(
-                    content = {
-                        Scaffold(
-                            topBar = {
-                                TopAppBar(title = {
-                                    Text(stringResource(id = R.string.app_name))
-                                })
-                            }
-                        ) { padding ->
-                            Content(
-                                layoutInfo = layoutInfo,
-                                windowMetrics = windowMetrics,
-                                paddingValues = padding
-                            )
-                        }
-                    },
-                    colorScheme = with(isSystemInDarkTheme()) {
-                        val hasDynamicColor = Build.VERSION.SDK_INT >= VERSION_CODES.S
-                        val context = LocalContext.current
-                        when (this) {
-                            true -> if (hasDynamicColor) {
-                                dynamicDarkColorScheme(context)
-                            } else {
-                                darkColorScheme()
-                            }
-                            false -> if (hasDynamicColor) {
-                                dynamicLightColorScheme(context)
-                            } else {
-                                lightColorScheme()
-                            }
-                        }
-                    }
-                )
+                }
             }
         }
     }

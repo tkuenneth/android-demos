@@ -11,13 +11,18 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -39,38 +44,34 @@ class FoldableDemoActivity : ComponentActivity() {
                         )
                     val windowMetrics = WindowMetricsCalculator.getOrCreate()
                         .computeCurrentWindowMetrics(this@FoldableDemoActivity)
+                    // might become part of some UIState - kept here for simplicity
+                    val foldDef = createFoldDef(layoutInfo, windowMetrics)
+                    val hasTopBar =
+                        foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT
+                    val hasBottomBar =
+                        foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT
+                    val hasNavigationRail = !hasBottomBar
+                    val index = rememberSaveable { mutableStateOf(0) }
                     MaterialTheme(
                         content = {
                             Scaffold(
-                                topBar = {
-                                    TopAppBar(title = {
-                                        Text(stringResource(id = R.string.app_name))
-                                    })
+                                topBar = { MyTopBar(hasTopBar = hasTopBar) },
+                                bottomBar = {
+                                    MyBottomBar(
+                                        hasBottomBar = hasBottomBar,
+                                        index = index
+                                    )
                                 }
                             ) { padding ->
                                 Content(
-                                    layoutInfo = layoutInfo,
-                                    windowMetrics = windowMetrics,
-                                    paddingValues = padding
+                                    foldDef = foldDef,
+                                    paddingValues = padding,
+                                    hasNavigationRail = hasNavigationRail,
+                                    index = index
                                 )
                             }
                         },
-                        colorScheme = with(isSystemInDarkTheme()) {
-                            val hasDynamicColor = Build.VERSION.SDK_INT >= VERSION_CODES.S
-                            val context = LocalContext.current
-                            when (this) {
-                                true -> if (hasDynamicColor) {
-                                    dynamicDarkColorScheme(context)
-                                } else {
-                                    darkColorScheme()
-                                }
-                                false -> if (hasDynamicColor) {
-                                    dynamicLightColorScheme(context)
-                                } else {
-                                    lightColorScheme()
-                                }
-                            }
-                        }
+                        colorScheme = defaultColorScheme()
                     )
                 }
             }
@@ -79,29 +80,95 @@ class FoldableDemoActivity : ComponentActivity() {
 }
 
 @Composable
-fun Content(
-    layoutInfo: WindowLayoutInfo?,
-    windowMetrics: WindowMetrics,
-    paddingValues: PaddingValues
-) {
-    val foldDef = createFoldDef(layoutInfo, windowMetrics)
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues = paddingValues)
-    ) {
-        if (foldDef.hasFold) {
-            FoldableScreen(
-                foldDef = foldDef
-            )
-        } else if (foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
-            LargeScreen(
-                foldDef = foldDef
-            )
+fun defaultColorScheme() = with(isSystemInDarkTheme()) {
+    val hasDynamicColor = Build.VERSION.SDK_INT >= VERSION_CODES.S
+    val context = LocalContext.current
+    when (this) {
+        true -> if (hasDynamicColor) {
+            dynamicDarkColorScheme(context)
         } else {
-            SmartphoneScreen(
-                foldDef = foldDef
-            )
+            darkColorScheme()
+        }
+        false -> if (hasDynamicColor) {
+            dynamicLightColorScheme(context)
+        } else {
+            lightColorScheme()
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyTopBar(hasTopBar: Boolean) {
+    if (hasTopBar)
+        TopAppBar(title = {
+            Text(stringResource(id = R.string.app_name))
+        })
+}
+
+@Composable
+fun MyBottomBar(hasBottomBar: Boolean, index: MutableState<Int>) {
+    if (hasBottomBar)
+        NavigationBar {
+            for (i in 0..2)
+                NavigationBarItem(selected = i == index.value,
+                                  onClick = { index.value = i },
+                                  icon = {
+                                      Icon(
+                                          painter = painterResource(id = R.drawable.ic_android_black_24dp),
+                                          contentDescription = null
+                                      )
+                                  },
+                                  label = {
+                                      MyText(index = i)
+                                  }
+                )
+        }
+}
+
+@Composable
+fun Content(
+    foldDef: FoldDef,
+    paddingValues: PaddingValues,
+    hasNavigationRail: Boolean,
+    index: MutableState<Int>
+) {
+    Row(modifier = Modifier.fillMaxSize()) {
+        if (hasNavigationRail)
+            NavigationRail {
+                for (i in 0..2)
+                    NavigationRailItem(selected = i == index.value,
+                                       onClick = {
+                                           index.value = i
+                                       },
+                                       icon = {
+                                           Icon(
+                                               painter = painterResource(id = R.drawable.ic_android_black_24dp),
+                                               contentDescription = null
+                                           )
+                                       },
+                                       label = {
+                                           MyText(index = i)
+                                       })
+            }
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues)
+        ) {
+            if (foldDef.hasFold) {
+                FoldableScreen(
+                    foldDef = foldDef
+                )
+            } else if (foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
+                LargeScreen(
+                    foldDef = foldDef
+                )
+            } else {
+                SmartphoneScreen(
+                    foldDef = foldDef
+                )
+            }
         }
     }
 }
@@ -247,5 +314,13 @@ fun PortraitOrLandscapeText(foldDef: FoldDef) {
         ),
         style = MaterialTheme.typography.displayLarge,
         color = Color.Black
+    )
+}
+
+@Composable
+fun MyText(index: Int, style: TextStyle = LocalTextStyle.current) {
+    Text(
+        text = "#${index + 1}",
+        style = style
     )
 }

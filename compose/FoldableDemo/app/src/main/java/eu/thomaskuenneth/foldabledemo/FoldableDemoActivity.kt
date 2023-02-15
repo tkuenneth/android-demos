@@ -231,7 +231,7 @@ fun FoldableScreen(foldDef: FoldDef) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(foldDef.widthLeftOrTop)
+                        .weight(1.0F)
                 ) {
                     firstComposable()
                 }

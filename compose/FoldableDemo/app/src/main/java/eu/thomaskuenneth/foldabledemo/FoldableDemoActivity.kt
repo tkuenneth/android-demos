@@ -15,22 +15,30 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.window.core.ExperimentalWindowApi
 import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.layout.*
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalWindowApi::class)
 class FoldableDemoActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,22 +60,42 @@ class FoldableDemoActivity : ComponentActivity() {
                         foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT
                     val hasNavigationRail = !hasBottomBar
                     val index = rememberSaveable { mutableStateOf(0) }
+                    var offset by remember { mutableStateOf(0.dp) }
+                    val localDensity = LocalDensity.current
                     MaterialTheme(
                         content = {
                             Scaffold(
-                                topBar = { MyTopBar(hasTopBar = hasTopBar) },
+                                topBar = {
+                                    MyTopBar(hasTopBar = hasTopBar)
+                                },
                                 bottomBar = {
-                                    MyBottomBar(
-                                        hasBottomBar = hasBottomBar,
-                                        index = index
-                                    )
+                                    Box(modifier = Modifier.onGloballyPositioned {
+                                        val bottomOrRight = with(
+                                            windowMetrics.getWindowInsets()
+                                                .getInsets(WindowInsetsCompat.Type.navigationBars())
+                                        ) {
+                                            if (foldDef.foldOrientation == FoldingFeature.Orientation.HORIZONTAL)
+                                                bottom
+                                            else
+                                                right
+                                        }
+                                        offset = with(localDensity) {
+                                            (it.size.height + bottomOrRight).toDp()
+                                        }
+                                    }) {
+                                        MyBottomBar(
+                                            hasBottomBar = hasBottomBar,
+                                            index = index
+                                        )
+                                    }
                                 }
                             ) { padding ->
                                 Content(
                                     foldDef = foldDef,
                                     paddingValues = padding,
                                     hasNavigationRail = hasNavigationRail,
-                                    index = index
+                                    index = index,
+                                    offset = offset
                                 )
                             }
                         },
@@ -89,6 +117,7 @@ fun defaultColorScheme() = with(isSystemInDarkTheme()) {
         } else {
             darkColorScheme()
         }
+
         false -> if (hasDynamicColor) {
             dynamicLightColorScheme(context)
         } else {
@@ -112,16 +141,16 @@ fun MyBottomBar(hasBottomBar: Boolean, index: MutableState<Int>) {
         NavigationBar {
             for (i in 0..2)
                 NavigationBarItem(selected = i == index.value,
-                                  onClick = { index.value = i },
-                                  icon = {
-                                      Icon(
-                                          painter = painterResource(id = R.drawable.ic_android_black_24dp),
-                                          contentDescription = null
-                                      )
-                                  },
-                                  label = {
-                                      MyText(index = i)
-                                  }
+                    onClick = { index.value = i },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_android_black_24dp),
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        MyText(index = i)
+                    }
                 )
         }
 }
@@ -131,25 +160,26 @@ fun Content(
     foldDef: FoldDef,
     paddingValues: PaddingValues,
     hasNavigationRail: Boolean,
-    index: MutableState<Int>
+    index: MutableState<Int>,
+    offset: Dp
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         if (hasNavigationRail)
             NavigationRail {
                 for (i in 0..2)
                     NavigationRailItem(selected = i == index.value,
-                                       onClick = {
-                                           index.value = i
-                                       },
-                                       icon = {
-                                           Icon(
-                                               painter = painterResource(id = R.drawable.ic_android_black_24dp),
-                                               contentDescription = null
-                                           )
-                                       },
-                                       label = {
-                                           MyText(index = i)
-                                       })
+                        onClick = {
+                            index.value = i
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_android_black_24dp),
+                                contentDescription = null
+                            )
+                        },
+                        label = {
+                            MyText(index = i)
+                        })
             }
         BoxWithConstraints(
             modifier = Modifier
@@ -158,7 +188,8 @@ fun Content(
         ) {
             if (foldDef.hasFold) {
                 FoldableScreen(
-                    foldDef = foldDef
+                    foldDef = foldDef,
+                    offset = offset
                 )
             } else if (foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
                 LargeScreen(
@@ -211,7 +242,7 @@ fun LargeScreen(foldDef: FoldDef) {
 }
 
 @Composable
-fun FoldableScreen(foldDef: FoldDef) {
+fun FoldableScreen(foldDef: FoldDef, offset: Dp) {
     val hinge = @Composable {
         Spacer(
             modifier = Modifier
@@ -239,7 +270,7 @@ fun FoldableScreen(foldDef: FoldDef) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(foldDef.widthRightOrBottom)
+                        .width(foldDef.widthRightOrBottom - offset)
                 ) {
                     secondComposable()
                 }
@@ -257,7 +288,7 @@ fun FoldableScreen(foldDef: FoldDef) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(foldDef.heightRightOrBottom)
+                        .height(foldDef.heightRightOrBottom - offset)
                 ) {
                     secondComposable()
                 }

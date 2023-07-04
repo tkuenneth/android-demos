@@ -36,7 +36,6 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,22 +72,23 @@ class FoldableDemoActivity : ComponentActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
+                    //region Variables
                     val layoutInfo by WindowInfoTracker.getOrCreate(this@FoldableDemoActivity)
                         .windowLayoutInfo(this@FoldableDemoActivity).collectAsState(
                             initial = null
                         )
                     val windowMetrics = WindowMetricsCalculator.getOrCreate()
                         .computeCurrentWindowMetrics(this@FoldableDemoActivity)
-                    // might become part of some UIState - kept here for simplicity
                     val foldDef = createFoldDef(layoutInfo, windowMetrics)
                     val hasTopBar =
                         foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT
                     val hasBottomBar =
                         foldDef.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT
                     val hasNavigationRail = !hasBottomBar
-                    val index = rememberSaveable { mutableStateOf(0) }
+                    var index by rememberSaveable { mutableStateOf(0) }
                     var offset by remember { mutableStateOf(0.dp) }
                     val localDensity = LocalDensity.current
+                    //endregion
                     MaterialTheme(
                         content = {
                             Scaffold(
@@ -112,17 +112,21 @@ class FoldableDemoActivity : ComponentActivity() {
                                     }) {
                                         FoldableDemoBottomBar(
                                             hasBottomBar = hasBottomBar,
-                                            index = index
+                                            index = index,
+                                            onClick = { index = it }
                                         )
                                     }
                                 }
                             ) { padding ->
                                 FoldableDemoContent(
+                                    //region Function parameters
                                     foldDef = foldDef,
                                     paddingValues = padding,
                                     hasNavigationRail = hasNavigationRail,
                                     index = index,
+                                    onClick = { index = it },
                                     offset = offset
+                                    //endregion
                                 )
                             }
                         },
@@ -163,12 +167,12 @@ fun FoldableDemoTopBar(hasTopBar: Boolean) {
 }
 
 @Composable
-fun FoldableDemoBottomBar(hasBottomBar: Boolean, index: MutableState<Int>) {
+fun FoldableDemoBottomBar(hasBottomBar: Boolean, index: Int, onClick: (Int) -> Unit) {
     if (hasBottomBar)
         NavigationBar {
             for (i in 0..2)
-                NavigationBarItem(selected = i == index.value,
-                    onClick = { index.value = i },
+                NavigationBarItem(selected = i == index,
+                    onClick = { onClick(i) },
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_android_black_24dp),
@@ -176,7 +180,7 @@ fun FoldableDemoBottomBar(hasBottomBar: Boolean, index: MutableState<Int>) {
                         )
                     },
                     label = {
-                        MyText(index = i)
+                        FoldableDemoText(index = i)
                     }
                 )
         }
@@ -187,27 +191,16 @@ fun FoldableDemoContent(
     foldDef: FoldDef,
     paddingValues: PaddingValues,
     hasNavigationRail: Boolean,
-    index: MutableState<Int>,
+    index: Int,
+    onClick: (Int) -> Unit,
     offset: Dp
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
-        if (hasNavigationRail)
-            NavigationRail {
-                for (i in 0..2)
-                    NavigationRailItem(selected = i == index.value,
-                        onClick = {
-                            index.value = i
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_android_black_24dp),
-                                contentDescription = null
-                            )
-                        },
-                        label = {
-                            MyText(index = i)
-                        })
-            }
+        FoldableDemoNavigationRail(
+            hasNavigationRail = hasNavigationRail,
+            index = index,
+            onClick = onClick
+        )
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
@@ -229,6 +222,31 @@ fun FoldableDemoContent(
             }
         }
     }
+}
+
+@Composable
+fun FoldableDemoNavigationRail(
+    hasNavigationRail: Boolean,
+    index: Int,
+    onClick: (Int) -> Unit
+) {
+    if (hasNavigationRail)
+        NavigationRail {
+            for (i in 0..2)
+                NavigationRailItem(selected = i == index,
+                    onClick = {
+                        onClick(i)
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_android_black_24dp),
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        FoldableDemoText(index = i)
+                    })
+        }
 }
 
 @Composable
@@ -376,7 +394,7 @@ fun PortraitOrLandscapeText(foldDef: FoldDef) {
 }
 
 @Composable
-fun MyText(index: Int, style: TextStyle = LocalTextStyle.current) {
+fun FoldableDemoText(index: Int, style: TextStyle = LocalTextStyle.current) {
     Text(
         text = "#${index + 1}",
         style = style

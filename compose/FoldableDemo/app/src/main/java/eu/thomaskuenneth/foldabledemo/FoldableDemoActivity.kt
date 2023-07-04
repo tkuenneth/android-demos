@@ -8,8 +8,33 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -35,7 +60,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.core.ExperimentalWindowApi
 import androidx.window.core.layout.WindowWidthSizeClass
-import androidx.window.layout.*
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoTracker
+import androidx.window.layout.WindowMetricsCalculator
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalWindowApi::class)
@@ -44,7 +71,7 @@ class FoldableDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
                     val layoutInfo by WindowInfoTracker.getOrCreate(this@FoldableDemoActivity)
                         .windowLayoutInfo(this@FoldableDemoActivity).collectAsState(
@@ -66,7 +93,7 @@ class FoldableDemoActivity : ComponentActivity() {
                         content = {
                             Scaffold(
                                 topBar = {
-                                    MyTopBar(hasTopBar = hasTopBar)
+                                    FoldableDemoTopBar(hasTopBar = hasTopBar)
                                 },
                                 bottomBar = {
                                     Box(modifier = Modifier.onGloballyPositioned {
@@ -83,14 +110,14 @@ class FoldableDemoActivity : ComponentActivity() {
                                             (it.size.height + bottomOrRight).toDp()
                                         }
                                     }) {
-                                        MyBottomBar(
+                                        FoldableDemoBottomBar(
                                             hasBottomBar = hasBottomBar,
                                             index = index
                                         )
                                     }
                                 }
                             ) { padding ->
-                                Content(
+                                FoldableDemoContent(
                                     foldDef = foldDef,
                                     paddingValues = padding,
                                     hasNavigationRail = hasNavigationRail,
@@ -128,7 +155,7 @@ fun defaultColorScheme() = with(isSystemInDarkTheme()) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTopBar(hasTopBar: Boolean) {
+fun FoldableDemoTopBar(hasTopBar: Boolean) {
     if (hasTopBar)
         TopAppBar(title = {
             Text(stringResource(id = R.string.app_name))
@@ -136,7 +163,7 @@ fun MyTopBar(hasTopBar: Boolean) {
 }
 
 @Composable
-fun MyBottomBar(hasBottomBar: Boolean, index: MutableState<Int>) {
+fun FoldableDemoBottomBar(hasBottomBar: Boolean, index: MutableState<Int>) {
     if (hasBottomBar)
         NavigationBar {
             for (i in 0..2)
@@ -156,7 +183,7 @@ fun MyBottomBar(hasBottomBar: Boolean, index: MutableState<Int>) {
 }
 
 @Composable
-fun Content(
+fun FoldableDemoContent(
     foldDef: FoldDef,
     paddingValues: PaddingValues,
     hasNavigationRail: Boolean,

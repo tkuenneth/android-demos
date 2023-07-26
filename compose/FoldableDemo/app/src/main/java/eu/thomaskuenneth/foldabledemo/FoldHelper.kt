@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.window.core.ExperimentalWindowApi
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowLayoutInfo
@@ -23,7 +22,6 @@ data class FoldDef(
     val windowSizeClass: WindowSizeClass,
 )
 
-@OptIn(ExperimentalWindowApi::class)
 @Composable
 fun createFoldDef(
     layoutInfo: WindowLayoutInfo?,
@@ -40,9 +38,10 @@ fun createFoldDef(
         (displayFeature as FoldingFeature).run {
             foldOrientation = orientation
             val foldAdjusted = isSurfaceDuo && (bounds.width() == 0 || bounds.height() == 0)
-            foldWidth = if (foldAdjusted) 84 else bounds.width()
-            foldHeight = if (foldAdjusted) 84 else bounds.height()
+            foldWidth = bounds.width()
+            foldHeight = bounds.height()
             if (orientation == FoldingFeature.Orientation.VERTICAL) {
+                if (foldAdjusted) foldWidth = if (foldHeight == 1800) 84 else 66
                 widthLeftOrTop = if (foldAdjusted)
                     (windowMetrics.bounds.width() - foldWidth) / 2
                 else
@@ -54,6 +53,7 @@ fun createFoldDef(
                     windowMetrics.bounds.width() - bounds.right
                 heightRightOrBottom = heightLeftOrTop
             } else if (orientation == FoldingFeature.Orientation.HORIZONTAL) {
+                if (foldAdjusted) foldHeight = if (foldWidth == 1800) 84 else 66
                 widthLeftOrTop = windowMetrics.bounds.width()
                 heightLeftOrTop = bounds.top
                 widthRightOrBottom = windowMetrics.bounds.width()
@@ -94,4 +94,4 @@ fun windowHeightDp(windowMetrics: WindowMetrics): Dp = with(LocalDensity.current
 }
 
 private val isSurfaceDuo: Boolean =
-    "Microsoft Surface Duo" == "${Build.MANUFACTURER} ${Build.MODEL}"
+    "${Build.MANUFACTURER} ${Build.MODEL}".contains("Microsoft Surface Duo")

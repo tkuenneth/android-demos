@@ -72,7 +72,6 @@ class FoldableDemoActivity : ComponentActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 setContent {
-                    //region Variables
                     val layoutInfo by WindowInfoTracker.getOrCreate(this@FoldableDemoActivity)
                         .windowLayoutInfo(this@FoldableDemoActivity).collectAsState(
                             initial = null
@@ -88,7 +87,6 @@ class FoldableDemoActivity : ComponentActivity() {
                     var index by rememberSaveable { mutableStateOf(0) }
                     var offset by remember { mutableStateOf(0.dp) }
                     val localDensity = LocalDensity.current
-                    //endregion
                     MaterialTheme(
                         content = {
                             Scaffold(
@@ -119,14 +117,12 @@ class FoldableDemoActivity : ComponentActivity() {
                                 }
                             ) { padding ->
                                 FoldableDemoContent(
-                                    //region Function parameters
                                     foldDef = foldDef,
                                     paddingValues = padding,
                                     hasNavigationRail = hasNavigationRail,
                                     index = index,
                                     onClick = { index = it },
                                     offset = offset
-                                    //endregion
                                 )
                             }
                         },

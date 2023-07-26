@@ -1,8 +1,10 @@
 package eu.thomaskuenneth.foldabledemo
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.window.core.ExperimentalWindowApi
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowLayoutInfo
@@ -21,6 +23,7 @@ data class FoldDef(
     val windowSizeClass: WindowSizeClass,
 )
 
+@OptIn(ExperimentalWindowApi::class)
 @Composable
 fun createFoldDef(
     layoutInfo: WindowLayoutInfo?,
@@ -36,19 +39,29 @@ fun createFoldDef(
     layoutInfo?.displayFeatures?.forEach { displayFeature ->
         (displayFeature as FoldingFeature).run {
             foldOrientation = orientation
+            val foldAdjusted = isSurfaceDuo && (bounds.width() == 0 || bounds.height() == 0)
+            foldWidth = if (foldAdjusted) 84 else bounds.width()
+            foldHeight = if (foldAdjusted) 84 else bounds.height()
             if (orientation == FoldingFeature.Orientation.VERTICAL) {
-                widthLeftOrTop = bounds.left
+                widthLeftOrTop = if (foldAdjusted)
+                    (windowMetrics.bounds.width() - foldWidth) / 2
+                else
+                    bounds.left
                 heightLeftOrTop = windowMetrics.bounds.height()
-                widthRightOrBottom = windowMetrics.bounds.width() - bounds.right
+                widthRightOrBottom = if (foldAdjusted)
+                    (windowMetrics.bounds.width() - foldWidth) / 2
+                else
+                    windowMetrics.bounds.width() - bounds.right
                 heightRightOrBottom = heightLeftOrTop
             } else if (orientation == FoldingFeature.Orientation.HORIZONTAL) {
                 widthLeftOrTop = windowMetrics.bounds.width()
                 heightLeftOrTop = bounds.top
                 widthRightOrBottom = windowMetrics.bounds.width()
-                heightRightOrBottom = windowMetrics.bounds.height() - bounds.bottom
+                heightRightOrBottom = if (foldAdjusted)
+                    (windowMetrics.bounds.height() - foldHeight) / 2
+                else
+                    windowMetrics.bounds.height() - bounds.bottom
             }
-            foldWidth = bounds.width()
-            foldHeight = bounds.height()
         }
     }
     return with(LocalDensity.current) {
@@ -79,3 +92,6 @@ fun windowWidthDp(windowMetrics: WindowMetrics): Dp = with(LocalDensity.current)
 fun windowHeightDp(windowMetrics: WindowMetrics): Dp = with(LocalDensity.current) {
     windowMetrics.bounds.height().toDp()
 }
+
+private val isSurfaceDuo: Boolean =
+    "Microsoft Surface Duo" == "${Build.MANUFACTURER} ${Build.MODEL}"

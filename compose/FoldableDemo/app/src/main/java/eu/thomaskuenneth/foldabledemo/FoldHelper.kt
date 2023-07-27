@@ -40,8 +40,12 @@ fun createFoldDef(
             val foldAdjusted = isSurfaceDuo && (bounds.width() == 0 || bounds.height() == 0)
             foldWidth = bounds.width()
             foldHeight = bounds.height()
+            // Surface Duo and Duo 2 width/height (depending on orientation) with hinge
+            val widthOrHeight = listOf(2784, 2754)
             if (orientation == FoldingFeature.Orientation.VERTICAL) {
-                if (foldAdjusted) foldWidth = if (foldHeight == 1800) 84 else 66
+                if (widthOrHeight.contains(windowMetrics.bounds.width())) {
+                    if (foldAdjusted) foldWidth = if (foldHeight == 1800) 84 else 66
+                }
                 widthLeftOrTop = if (foldAdjusted)
                     (windowMetrics.bounds.width() - foldWidth) / 2
                 else
@@ -53,7 +57,9 @@ fun createFoldDef(
                     windowMetrics.bounds.width() - bounds.right
                 heightRightOrBottom = heightLeftOrTop
             } else if (orientation == FoldingFeature.Orientation.HORIZONTAL) {
-                if (foldAdjusted) foldHeight = if (foldWidth == 1800) 84 else 66
+                if (widthOrHeight.contains(windowMetrics.bounds.height())) {
+                    if (foldAdjusted) foldHeight = if (foldWidth == 1800) 84 else 66
+                }
                 widthLeftOrTop = windowMetrics.bounds.width()
                 heightLeftOrTop = bounds.top
                 widthRightOrBottom = windowMetrics.bounds.width()

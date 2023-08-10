@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">EmojiPickerDemo</string>
+    <string name="open">Open Picker</string>
+    <string name="no_emoji_picked">No emoji picked</string>
+</resources>

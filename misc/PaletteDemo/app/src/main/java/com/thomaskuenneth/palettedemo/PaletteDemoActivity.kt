@@ -1,21 +1,33 @@
 package com.thomaskuenneth.palettedemo
 
-import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -24,36 +36,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.palette.graphics.Palette
-import com.thomaskuenneth.palettedemo.ui.theme.PaletteDemoTheme
 import kotlinx.coroutines.launch
-
-class PaletteDemoViewModel : ViewModel() {
-
-    private val _bitmap: MutableLiveData<Bitmap> =
-        MutableLiveData<Bitmap>()
-
-    val bitmap: LiveData<Bitmap>
-        get() = _bitmap
-
-    fun setBitmap(bitmap: Bitmap) {
-        _bitmap.value = bitmap
-    }
-
-    private val _palette: MutableLiveData<Palette> =
-        MutableLiveData<Palette>()
-
-    val palette: LiveData<Palette>
-        get() = _palette
-
-    fun setPalette(palette: Palette) {
-        _palette.value = palette
-    }
-}
 
 class PaletteDemoActivity : ComponentActivity() {
 
@@ -85,13 +75,12 @@ class PaletteDemoActivity : ComponentActivity() {
                     }
                 }
             }
+        enableEdgeToEdge()
         setContent {
-            PaletteDemoTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    PaletteDemo(
-                        onClick = { showGallery() }
-                    )
-                }
+            MaterialTheme(colorScheme = defaultColorScheme()) {
+                PaletteDemo(
+                    onClick = { showGallery() }
+                )
             }
         }
     }
@@ -101,6 +90,7 @@ class PaletteDemoActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaletteDemo(
     viewModel: PaletteDemoViewModel = viewModel(),
@@ -108,43 +98,50 @@ fun PaletteDemo(
 ) {
     val bitmap = viewModel.bitmap.observeAsState()
     val palette = viewModel.palette.observeAsState()
-    Scaffold(topBar = {
-        TopAppBar(title = { Text(stringResource(id = R.string.app_name)) })
-    },
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.app_name)) },
+                scrollBehavior = scrollBehavior
+            )
+        },
         floatingActionButton = {
-            FloatingActionButton(onClick = onClick) {
+            FloatingActionButton(
+                onClick = onClick
+            ) {
                 Icon(
                     Icons.Default.Search,
                     contentDescription = stringResource(id = R.string.select)
                 )
             }
-        }
+        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) {
-        Surface(modifier = Modifier.padding(it)) {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                bitmap.value?.run {
-                    Image(
-                        bitmap = asImageBitmap(),
-                        contentDescription = null,
-                        alignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .consumeWindowInsets(it)
+                .verticalScroll(rememberScrollState())
+                .padding(it),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            bitmap.value?.run {
+                Image(
+                    bitmap = asImageBitmap(),
+                    contentDescription = null,
+                    alignment = Alignment.Center
+                )
+            }
+            palette.value?.run {
+                swatches.forEach { swatch ->
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth()
+                            .height(32.dp)
+                            .clip(RectangleShape)
+                            .background(Color(swatch.rgb))
                     )
-                }
-                palette.value?.run {
-                    swatches.forEach { swatch ->
-                        Box(
-                            modifier = Modifier
-                                .padding(top = 8.dp)
-                                .fillMaxWidth()
-                                .height(32.dp)
-                                .clip(RectangleShape)
-                                .background(Color(swatch.rgb))
-                        )
-                    }
                 }
             }
         }

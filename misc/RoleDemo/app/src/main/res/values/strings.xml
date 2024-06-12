@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">RoleDemo</string>
-    <string name="has_role">Role already held</string>
-    <string name="role_acquired">Role acquired</string>
-    <string name="role_not_available">Role not available</string>
-</resources>

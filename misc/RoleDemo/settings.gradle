@@ -1,8 +1,0 @@
-dependencyResolutionManagement {
-    repositories {
-        google()
-        jcenter()
-    }
-}
-rootProject.name = "RoleDemo"
-include ':app'

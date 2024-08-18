@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Material Adaptive Demo</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_info">Info</string>
+</resources>

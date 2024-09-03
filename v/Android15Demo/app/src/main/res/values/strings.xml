@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Android 15 Demo</string>
+    <string name="was_force_stopped">Was force-stopped</string>
+    <string name="screen_recording_active">Screen recording active</string>
 </resources>

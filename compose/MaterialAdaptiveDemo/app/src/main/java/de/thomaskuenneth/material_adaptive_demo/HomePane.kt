@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -72,7 +73,7 @@ fun ThreePaneScaffoldScope.MyList(
     onItemClicked: (Int) -> Unit, currentIndex: Int, detailVisible: Boolean
 ) {
     AnimatedPane {
-        LazyColumn(modifier = Modifier.safeContentPadding()) {
+        LazyColumn(modifier = Modifier.safeDrawingPadding()) {
             items(20) {
                 ListItem(
                     headlineContent = { Text("${it + 1}") },

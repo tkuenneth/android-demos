@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name" translatable="false">PhotoPickerDemo</string>
-    <string name="button">Choose image</string>
-    <string name="no_image">No image selected</string>
-</resources>
